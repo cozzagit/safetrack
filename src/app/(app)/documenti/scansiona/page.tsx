@@ -123,11 +123,11 @@ export default function ScanPage() {
       return;
     }
     fetch(
-      `/api/dashboard/stats?companyId=${selectedCompanyId}&employeeId=${selectedEmployeeId}`
+      `/api/deadlines?companyId=${selectedCompanyId}&employeeId=${selectedEmployeeId}`
     )
       .then((r) => r.json())
       .then((res) => {
-        if (res.data?.deadlines) setDeadlinesForEmployee(res.data.deadlines);
+        if (res.data) setDeadlinesForEmployee(res.data);
       })
       .catch(() => {});
   }, [selectedEmployeeId, selectedCompanyId]);
@@ -242,11 +242,31 @@ export default function ScanPage() {
 
   const handleSave = async () => {
     setStage('saving');
-    // The document was already saved during upload.
-    // In a production version, we'd PATCH the document with edited fields here.
-    // For now, just transition to done.
-    await new Promise((r) => setTimeout(r, 500));
-    setStage('done');
+    try {
+      if (savedDocId) {
+        // PATCH the document with any fields edited by the user after OCR
+        const res = await fetch(`/api/documents/${savedDocId}`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title: courseName || undefined,
+            issueDate: courseDate || undefined,
+            expiryDate: expiryDate || undefined,
+            issuingBody: issuingBody || undefined,
+            deadlineId: selectedDeadlineId || undefined,
+            employeeId: selectedEmployeeId || undefined,
+          }),
+        });
+        if (!res.ok) {
+          const json = await res.json().catch(() => ({}));
+          throw new Error(json.error?.message || 'Errore nel salvataggio');
+        }
+      }
+      setStage('done');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Errore durante il salvataggio');
+      setStage('results');
+    }
   };
 
   const handleReset = () => {

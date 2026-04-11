@@ -14,7 +14,7 @@ import { extractCertificateData } from '@/lib/services/ocr-service';
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
-const UPLOAD_BASE = process.env.UPLOAD_DIR || '/data/safetrack/uploads';
+const UPLOAD_BASE = process.env.UPLOAD_DIR || './uploads';
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 const ALLOWED_MIME_TYPES = [
   'image/jpeg',

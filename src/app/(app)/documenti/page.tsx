@@ -82,6 +82,7 @@ export default function DocumentsPage() {
   const [companies, setCompanies] = useState<CompanyOption[]>([]);
   const [employees, setEmployees] = useState<EmployeeOption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [showFilters, setShowFilters] = useState(false);
 
   // Filters
@@ -129,12 +130,16 @@ export default function DocumentsPage() {
     if (filterCompanyId) params.set('companyId', filterCompanyId);
     if (filterEmployeeId) params.set('employeeId', filterEmployeeId);
 
+    setFetchError(null);
     fetch(`/api/documents?${params.toString()}`)
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`Errore HTTP ${r.status}`);
+        return r.json();
+      })
       .then((res) => {
         if (res.data) setDocuments(res.data);
       })
-      .catch(() => {})
+      .catch(() => setFetchError('Impossibile caricare i documenti. Riprova.'))
       .finally(() => setIsLoading(false));
   }, [filterCompanyId, filterEmployeeId]);
 
@@ -157,7 +162,7 @@ export default function DocumentsPage() {
           </p>
         </div>
 
-        <Link href="/documenti/scansiona" className="btn-accent">
+        <Link href="/documenti/scansiona" className="btn-primary">
           <Camera size={18} />
           Scansiona Attestato
         </Link>
@@ -244,8 +249,20 @@ export default function DocumentsPage() {
         </div>
       )}
 
+      {/* Error state */}
+      {!isLoading && fetchError && (
+        <div
+          className="card p-6 text-center mb-4"
+          style={{ borderColor: 'var(--color-danger-100)' }}
+        >
+          <p className="text-sm font-medium" style={{ color: 'var(--color-danger)' }}>
+            {fetchError}
+          </p>
+        </div>
+      )}
+
       {/* Empty state */}
-      {!isLoading && documents.length === 0 && (
+      {!isLoading && !fetchError && documents.length === 0 && (
         <div className="card p-12 text-center">
           <FolderOpen
             size={48}
@@ -272,25 +289,31 @@ export default function DocumentsPage() {
       )}
 
       {/* Documents grid */}
-      {!isLoading && documents.length > 0 && (
+      {!isLoading && !fetchError && documents.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {documents.map((doc) => (
             <div key={doc.id} className="card card-hover p-4">
               {/* Thumbnail for images */}
               {isImageMime(doc.mimeType) && (
                 <div
-                  className="rounded-lg overflow-hidden mb-3 h-32 bg-cover bg-center"
-                  style={{
-                    backgroundImage: `url(/api/documents/${doc.id}/thumbnail)`,
-                    backgroundColor: 'var(--color-primary-50)',
-                  }}
+                  className="rounded-lg overflow-hidden mb-3 h-32"
+                  style={{ backgroundColor: 'var(--color-primary-50)' }}
                 >
-                  <div className="w-full h-full flex items-center justify-center">
-                    <FileText
-                      size={32}
-                      style={{ color: 'var(--color-primary-100)' }}
-                    />
-                  </div>
+                  <img
+                    src={`/api/documents/${doc.id}/thumbnail`}
+                    alt={doc.title || doc.fileName}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.style.display = 'none';
+                      const parent = target.parentElement;
+                      if (parent) {
+                        parent.style.display = 'flex';
+                        parent.style.alignItems = 'center';
+                        parent.style.justifyContent = 'center';
+                      }
+                    }}
+                  />
                 </div>
               )}
 
@@ -305,11 +328,25 @@ export default function DocumentsPage() {
                   </h3>
 
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="badge badge-primary">
+                    <span
+                      className="text-[10px] px-1.5 py-0.5 rounded font-medium"
+                      style={{
+                        backgroundColor: 'var(--color-primary-50)',
+                        color: 'var(--color-primary)',
+                      }}
+                    >
                       {DOC_TYPE_LABELS[doc.documentType] || doc.documentType}
                     </span>
                     {doc.aiExtracted && (
-                      <span className="badge badge-accent">AI</span>
+                      <span
+                        className="text-[10px] px-1.5 py-0.5 rounded font-medium"
+                        style={{
+                          backgroundColor: 'var(--color-accent-100)',
+                          color: 'var(--color-accent-dark)',
+                        }}
+                      >
+                        AI
+                      </span>
                     )}
                   </div>
                 </div>
@@ -340,7 +377,7 @@ export default function DocumentsPage() {
               </div>
 
               {/* Download */}
-              <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--color-border-light)' }}>
+              <div className="mt-3 pt-3" style={{ borderTop: '1px solid var(--color-border)' }}>
                 <a
                   href={`/api/documents/${doc.id}/download`}
                   className="flex items-center gap-2 text-xs font-semibold"

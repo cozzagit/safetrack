@@ -114,6 +114,12 @@ export default function RegisterPage() {
         email: form.email.trim().toLowerCase(),
         password: form.password,
         name: `${form.firstName.trim()} ${form.lastName.trim()}`,
+        // Additional profile fields passed as extra data
+        // @ts-expect-error — better-auth supports extra fields via additionalFields
+        firstName: form.firstName.trim(),
+        lastName: form.lastName.trim(),
+        companyName: form.companyName.trim(),
+        phone: form.phone.trim() || undefined,
       });
 
       if (result.error) {

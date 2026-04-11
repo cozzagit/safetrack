@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 // Public routes that don't require authentication
 const PUBLIC_PATHS = new Set(["/", "/login", "/register", "/reset-password", "/terms", "/privacy"]);
-const PUBLIC_PREFIXES = ["/api/auth", "/_next", "/favicon.ico", "/robots.txt", "/sitemap.xml"];
+// API routes handle their own auth and return proper 401 JSON — don't redirect them to /login
+const PUBLIC_PREFIXES = ["/api/", "/_next", "/favicon.ico", "/robots.txt", "/sitemap.xml"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;

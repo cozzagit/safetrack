@@ -280,11 +280,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               aria-label="Notifiche"
             >
               <Bell className="w-5 h-5" />
-              {/* Badge indicator */}
-              <span
-                className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full"
-                style={{ backgroundColor: "var(--color-danger)" }}
-              />
             </button>
 
             {/* Settings */}

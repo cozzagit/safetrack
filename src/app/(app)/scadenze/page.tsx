@@ -9,6 +9,7 @@ import {
   Loader2,
   AlertTriangle,
   CheckCircle2,
+  XCircle,
   List,
   CalendarDays,
   ChevronLeft,
@@ -230,10 +231,12 @@ function CompleteModal({
 function Toast({
   message,
   visible,
+  type = "success",
   onHide,
 }: {
   message: string;
   visible: boolean;
+  type?: "success" | "error";
   onHide: () => void;
 }) {
   useEffect(() => {
@@ -245,16 +248,22 @@ function Toast({
 
   if (!visible) return null;
 
+  const isError = type === "error";
+
   return (
     <div
       className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-50 px-5 py-3 rounded-xl text-sm font-medium flex items-center gap-2"
       style={{
-        backgroundColor: "var(--color-accent)",
+        backgroundColor: isError ? "var(--color-danger)" : "var(--color-accent)",
         color: "white",
         boxShadow: "var(--shadow-lg)",
       }}
     >
-      <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+      {isError ? (
+        <XCircle className="w-4 h-4 flex-shrink-0" />
+      ) : (
+        <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+      )}
       {message}
     </div>
   );
@@ -390,16 +399,16 @@ function DeadlineCard({
                   </Link>
                 </DropdownMenu.Item>
                 <DropdownMenu.Item
-                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm cursor-pointer hover:bg-[var(--color-primary-50)] transition-colors outline-none"
-                  style={{ color: "var(--color-text-primary)" }}
+                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm outline-none"
+                  style={{ color: "var(--color-text-primary)", opacity: 0.5, cursor: "not-allowed" }}
                   disabled
                 >
                   <BellOff className="w-4 h-4" style={{ color: "var(--color-text-muted)" }} />
                   Silenzia notifiche
                 </DropdownMenu.Item>
                 <DropdownMenu.Item
-                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm cursor-pointer hover:bg-[var(--color-primary-50)] transition-colors outline-none"
-                  style={{ color: "var(--color-text-primary)" }}
+                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm outline-none"
+                  style={{ color: "var(--color-text-primary)", opacity: 0.5, cursor: "not-allowed" }}
                   disabled
                 >
                   <Edit3 className="w-4 h-4" style={{ color: "var(--color-text-muted)" }} />
@@ -660,6 +669,7 @@ function ScadenzePage() {
   // Toast
   const [toastMessage, setToastMessage] = useState("");
   const [toastVisible, setToastVisible] = useState(false);
+  const [toastType, setToastType] = useState<"success" | "error">("success");
 
   // Load companies for filter dropdown
   useEffect(() => {
@@ -723,6 +733,7 @@ function ScadenzePage() {
       const nextDate = json.data?.nextDeadline?.dueDate;
 
       setCompleteTarget(null);
+      setToastType("success");
       setToastMessage(
         nextDate
           ? `Scadenza completata. Prossimo rinnovo: ${nextDate}`
@@ -733,6 +744,7 @@ function ScadenzePage() {
       // Reload
       loadDeadlines();
     } catch {
+      setToastType("error");
       setToastMessage("Errore durante il completamento.");
       setToastVisible(true);
     } finally {
@@ -950,6 +962,7 @@ function ScadenzePage() {
       <Toast
         message={toastMessage}
         visible={toastVisible}
+        type={toastType}
         onHide={() => setToastVisible(false)}
       />
     </div>
