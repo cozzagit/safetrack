@@ -19,6 +19,8 @@ import {
   Edit3,
   Eye,
   X,
+  History,
+  AlertCircle,
 } from "lucide-react";
 import * as Dialog from "@radix-ui/react-dialog";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
@@ -270,6 +272,126 @@ function Toast({
         <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
       )}
       {message}
+    </div>
+  );
+}
+
+// ─── Bulk Complete Modal ────────────────────────────────────────────────────
+
+function BulkCompleteModal({
+  open,
+  onClose,
+  onSuccess,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onSuccess: (result: { completed: number; renewalsCreated: number; pendingRemaining: number }) => void;
+}) {
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleConfirm() {
+    setProcessing(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/deadlines/bulk-complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          beforeDate: new Date().toISOString().split("T")[0],
+          useOriginalDates: true,
+        }),
+      });
+      if (!res.ok) throw new Error("Errore durante l'elaborazione");
+      const json = await res.json();
+      onSuccess(json.data);
+    } catch {
+      setError("Errore durante l'allineamento. Riprova.");
+    } finally {
+      setProcessing(false);
+    }
+  }
+
+  if (!open) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: "rgba(15, 23, 42, 0.55)" }}
+      onClick={(e) => { if (e.target === e.currentTarget && !processing) onClose(); }}
+    >
+      <div
+        className="w-full max-w-md rounded-xl p-6"
+        style={{
+          backgroundColor: "var(--color-surface)",
+          boxShadow: "var(--shadow-xl)",
+        }}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center"
+            style={{ backgroundColor: "var(--color-warning-100)" }}
+          >
+            <History className="w-5 h-5" style={{ color: "var(--color-warning)" }} />
+          </div>
+          <div>
+            <h3
+              className="text-base font-bold"
+              style={{ color: "var(--color-text-primary)" }}
+            >
+              Allinea Storico
+            </h3>
+            <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+              Tutte le aziende
+            </p>
+          </div>
+        </div>
+
+        <p
+          className="text-sm mb-4"
+          style={{ color: "var(--color-text-secondary)" }}
+        >
+          Completa automaticamente tutte le scadenze passate di tutte le aziende
+          e genera i rinnovi fino ad oggi. Le scadenze future resteranno in programma.
+        </p>
+
+        {error && (
+          <div
+            className="flex items-center gap-2 p-3 rounded-lg mb-4 text-sm"
+            style={{
+              backgroundColor: "var(--color-danger-50)",
+              color: "var(--color-danger)",
+              border: "1px solid var(--color-danger-100)",
+            }}
+          >
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            {error}
+          </div>
+        )}
+
+        <div className="flex gap-3 justify-end">
+          <button
+            onClick={onClose}
+            className="btn-secondary"
+            disabled={processing}
+          >
+            Annulla
+          </button>
+          <button
+            onClick={handleConfirm}
+            className="btn-primary"
+            disabled={processing}
+            style={{ backgroundColor: "var(--color-warning)" }}
+          >
+            {processing ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <History className="w-4 h-4" />
+            )}
+            {processing ? "Elaborazione..." : "Allinea Storico"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
@@ -676,6 +798,9 @@ function ScadenzePage() {
   const [toastVisible, setToastVisible] = useState(false);
   const [toastType, setToastType] = useState<"success" | "error">("success");
 
+  // Bulk complete
+  const [showBulkComplete, setShowBulkComplete] = useState(false);
+
   // Load companies for filter dropdown
   useEffect(() => {
     async function loadCompanies() {
@@ -790,9 +915,23 @@ function ScadenzePage() {
           </div>
         </div>
 
+        {/* Actions */}
+        <div className="flex items-center gap-2 self-start">
+          <button
+            onClick={() => setShowBulkComplete(true)}
+            className="btn-secondary text-sm"
+            style={{
+              color: "var(--color-warning)",
+              borderColor: "var(--color-warning)",
+            }}
+          >
+            <History className="w-4 h-4" />
+            <span className="hidden sm:inline">Allinea Storico</span>
+          </button>
+
         {/* View toggle */}
         <div
-          className="flex rounded-lg p-0.5 self-start"
+          className="flex rounded-lg p-0.5"
           style={{
             backgroundColor: "var(--color-border)",
           }}
@@ -829,6 +968,7 @@ function ScadenzePage() {
             <CalendarDays className="w-3.5 h-3.5" />
             Calendario
           </button>
+        </div>
         </div>
       </div>
 
@@ -969,6 +1109,21 @@ function ScadenzePage() {
         visible={toastVisible}
         type={toastType}
         onHide={() => setToastVisible(false)}
+      />
+
+      {/* Bulk Complete Modal */}
+      <BulkCompleteModal
+        open={showBulkComplete}
+        onClose={() => setShowBulkComplete(false)}
+        onSuccess={(result) => {
+          setShowBulkComplete(false);
+          setToastType("success");
+          setToastMessage(
+            `${result.completed} scadenz${result.completed === 1 ? "a completata" : "e completate"}, ${result.renewalsCreated} rinnov${result.renewalsCreated === 1 ? "o generato" : "i generati"}, ${result.pendingRemaining} in programma.`
+          );
+          setToastVisible(true);
+          loadDeadlines();
+        }}
       />
     </div>
   );

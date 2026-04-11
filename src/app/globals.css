@@ -347,6 +347,54 @@ body {
   background: var(--color-text-muted);
 }
 
+/* ============================================================
+   Print Styles — Report PDF export
+   ============================================================ */
+
+@media print {
+  nav, .no-print, button:not(.print-keep) {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: #1e293b !important;
+    font-size: 11pt;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+    break-inside: avoid;
+  }
+
+  .stat-card {
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  .print-break-before {
+    break-before: page;
+  }
+
+  /* Show expanded content in print */
+  main {
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  header, aside, footer {
+    display: none !important;
+  }
+
+  /* Reset sidebar margin */
+  .lg\:ml-64 {
+    margin-left: 0 !important;
+  }
+}
+
 /* Focus visible for accessibility */
 :focus-visible {
   outline: 2px solid var(--color-primary);

@@ -25,6 +25,7 @@ import {
   Flame,
   Heart,
   ChevronRight,
+  History,
 } from "lucide-react";
 import { RiskBadge } from "@/components/shared/RiskBadge";
 import { DeadlineStatusBadge } from "@/components/shared/DeadlineStatusBadge";
@@ -678,31 +679,171 @@ function EmployeesTab({
   );
 }
 
+// ─── Allinea Storico Modal ────────────────────────────────────────────────────
+
+function AllineaStoricoModal({
+  companyId,
+  overdueCount,
+  onClose,
+  onSuccess,
+}: {
+  companyId: string;
+  overdueCount: number;
+  onClose: () => void;
+  onSuccess: (result: { completed: number; renewalsCreated: number; pendingRemaining: number }) => void;
+}) {
+  const [processing, setProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleConfirm() {
+    setProcessing(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/deadlines/bulk-complete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          companyId,
+          beforeDate: new Date().toISOString().split("T")[0],
+          useOriginalDates: true,
+        }),
+      });
+      if (!res.ok) throw new Error("Errore durante l'elaborazione");
+      const json = await res.json();
+      onSuccess(json.data);
+    } catch {
+      setError("Errore durante l'allineamento. Riprova.");
+    } finally {
+      setProcessing(false);
+    }
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ backgroundColor: "rgba(15, 23, 42, 0.55)" }}
+      onClick={(e) => { if (e.target === e.currentTarget && !processing) onClose(); }}
+    >
+      <div
+        className="w-full max-w-md rounded-xl p-6"
+        style={{
+          backgroundColor: "var(--color-surface)",
+          boxShadow: "var(--shadow-xl)",
+        }}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center"
+            style={{ backgroundColor: "var(--color-warning-100)" }}
+          >
+            <History className="w-5 h-5" style={{ color: "var(--color-warning)" }} />
+          </div>
+          <div>
+            <h3
+              className="text-base font-bold"
+              style={{ color: "var(--color-text-primary)" }}
+            >
+              Allinea Storico
+            </h3>
+            <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+              Completamento massivo scadenze passate
+            </p>
+          </div>
+        </div>
+
+        <p
+          className="text-sm mb-4"
+          style={{ color: "var(--color-text-secondary)" }}
+        >
+          Completa automaticamente tutte le scadenze passate e genera i rinnovi
+          fino ad oggi. Le scadenze future resteranno in programma.
+        </p>
+
+        {overdueCount > 0 && (
+          <div
+            className="flex items-center gap-2 p-3 rounded-lg mb-4 text-sm"
+            style={{
+              backgroundColor: "var(--color-warning-100)",
+              color: "var(--color-warning)",
+            }}
+          >
+            <AlertTriangle className="w-4 h-4 flex-shrink-0" />
+            <span>
+              <strong>{overdueCount}</strong> scadenz{overdueCount === 1 ? "a scaduta verra elaborata" : "e scadute verranno elaborate"}.
+            </span>
+          </div>
+        )}
+
+        {error && (
+          <div
+            className="flex items-center gap-2 p-3 rounded-lg mb-4 text-sm"
+            style={{
+              backgroundColor: "var(--color-danger-50)",
+              color: "var(--color-danger)",
+              border: "1px solid var(--color-danger-100)",
+            }}
+          >
+            <AlertCircle className="w-4 h-4 flex-shrink-0" />
+            {error}
+          </div>
+        )}
+
+        <div className="flex gap-3 justify-end">
+          <button
+            onClick={onClose}
+            className="btn-secondary"
+            disabled={processing}
+          >
+            Annulla
+          </button>
+          <button
+            onClick={handleConfirm}
+            className="btn-primary"
+            disabled={processing}
+            style={{ backgroundColor: "var(--color-warning)" }}
+          >
+            {processing ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <History className="w-4 h-4" />
+            )}
+            {processing ? "Elaborazione..." : "Allinea Storico"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Tab: Scadenze ────────────────────────────────────────────────────────────
 
 function DeadlinesTab({
   companyId,
   employees,
+  overdueCount,
+  onDataChanged,
 }: {
   companyId: string;
   employees: Employee[];
+  overdueCount: number;
+  onDataChanged: () => void;
 }) {
   const [deadlines, setDeadlines] = useState<Deadline[]>([]);
   const [loading, setLoading] = useState(true);
   const [filterEmployee, setFilterEmployee] = useState("");
   const [filterStatus, setFilterStatus] = useState("");
+  const [showAllinea, setShowAllinea] = useState(false);
+  const [allineaToast, setAllineaToast] = useState<{
+    completed: number;
+    renewalsCreated: number;
+    pendingRemaining: number;
+  } | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
-        // We fetch company detail again to get fresh deadlines — in a real app
-        // there'd be a dedicated /api/companies/:id/deadlines endpoint.
-        // For now we fetch all deadlines through the company endpoint.
         const res = await fetch(`/api/companies/${companyId}`);
         if (res.ok) {
-          const json = await res.json();
-          // The route doesn't return deadlines list directly, just summary.
-          // We'll show a placeholder and the summary data.
           setDeadlines([]);
         }
       } catch {
@@ -713,6 +854,16 @@ function DeadlinesTab({
     }
     load();
   }, [companyId]);
+
+  function handleAllineaSuccess(result: {
+    completed: number;
+    renewalsCreated: number;
+    pendingRemaining: number;
+  }) {
+    setShowAllinea(false);
+    setAllineaToast(result);
+    onDataChanged();
+  }
 
   if (loading) {
     return (
@@ -727,31 +878,54 @@ function DeadlinesTab({
 
   return (
     <div>
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-4">
-        <select
-          value={filterEmployee}
-          onChange={(e) => setFilterEmployee(e.target.value)}
-          className="input-field text-sm"
-        >
-          <option value="">Tutti i dipendenti</option>
-          {employees.map((emp) => (
-            <option key={emp.id} value={emp.id}>
-              {emp.firstName} {emp.lastName}
-            </option>
-          ))}
-        </select>
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-          className="input-field text-sm"
-        >
-          <option value="">Tutti gli stati</option>
-          <option value="overdue">Scadute</option>
-          <option value="expiring_soon">In scadenza</option>
-          <option value="pending">In regola</option>
-          <option value="completed">Completate</option>
-        </select>
+      {/* Header with Allinea Storico */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+        {/* Filters */}
+        <div className="flex flex-col sm:flex-row gap-3 flex-1">
+          <select
+            value={filterEmployee}
+            onChange={(e) => setFilterEmployee(e.target.value)}
+            className="input-field text-sm"
+          >
+            <option value="">Tutti i dipendenti</option>
+            {employees.map((emp) => (
+              <option key={emp.id} value={emp.id}>
+                {emp.firstName} {emp.lastName}
+              </option>
+            ))}
+          </select>
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="input-field text-sm"
+          >
+            <option value="">Tutti gli stati</option>
+            <option value="overdue">Scadute</option>
+            <option value="expiring_soon">In scadenza</option>
+            <option value="pending">In regola</option>
+            <option value="completed">Completate</option>
+          </select>
+        </div>
+
+        {overdueCount > 0 && (
+          <button
+            onClick={() => setShowAllinea(true)}
+            className="btn-primary flex-shrink-0"
+            style={{ backgroundColor: "var(--color-warning)" }}
+          >
+            <History className="w-4 h-4" />
+            Allinea Storico
+            <span
+              className="ml-1 px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.25)",
+                color: "white",
+              }}
+            >
+              {overdueCount}
+            </span>
+          </button>
+        )}
       </div>
 
       {/* Empty state */}
@@ -774,6 +948,42 @@ function DeadlinesTab({
           <ChevronRight className="w-4 h-4" />
         </Link>
       </div>
+
+      {/* Allinea Storico Modal */}
+      {showAllinea && (
+        <AllineaStoricoModal
+          companyId={companyId}
+          overdueCount={overdueCount}
+          onClose={() => setShowAllinea(false)}
+          onSuccess={handleAllineaSuccess}
+        />
+      )}
+
+      {/* Allinea toast */}
+      {allineaToast && (
+        <div
+          className="fixed bottom-24 lg:bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-3 rounded-xl shadow-xl"
+          style={{
+            backgroundColor: "var(--color-accent)",
+            color: "white",
+            minWidth: "280px",
+            maxWidth: "90vw",
+          }}
+        >
+          <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+          <div className="flex-1 text-sm font-medium">
+            {allineaToast.completed} scadenz{allineaToast.completed === 1 ? "a completata" : "e completate"},{" "}
+            {allineaToast.renewalsCreated} rinnov{allineaToast.renewalsCreated === 1 ? "o generato" : "i generati"},{" "}
+            {allineaToast.pendingRemaining} in programma.
+          </div>
+          <button
+            onClick={() => setAllineaToast(null)}
+            className="flex-shrink-0 opacity-80 hover:opacity-100"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
@@ -1142,6 +1352,8 @@ export default function AziendaDetailPage() {
             <DeadlinesTab
               companyId={company.id}
               employees={company.employees}
+              overdueCount={deadlineSummary.overdue}
+              onDataChanged={loadCompany}
             />
           )}
           {activeTab === "documenti" && <DocumentsTab />}
