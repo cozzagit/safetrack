@@ -196,7 +196,7 @@ export default function RegisterPage() {
             </label>
             <div className="relative">
               <User
-                className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+                className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
                 style={{ color: "var(--color-text-muted)" }}
               />
               <input
@@ -206,7 +206,7 @@ export default function RegisterPage() {
                 value={form.firstName}
                 onChange={(e) => updateField("firstName", e.target.value)}
                 placeholder="Mario"
-                className={`input-field pl-9 ${errors.firstName ? "error" : ""}`}
+                className={`input-field pl-11 ${errors.firstName ? "error" : ""}`}
               />
             </div>
             {errors.firstName && <p className="error-message">{errors.firstName}</p>}
@@ -235,7 +235,7 @@ export default function RegisterPage() {
           </label>
           <div className="relative">
             <Mail
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
               style={{ color: "var(--color-text-muted)" }}
             />
             <input
@@ -245,7 +245,7 @@ export default function RegisterPage() {
               value={form.email}
               onChange={(e) => updateField("email", e.target.value)}
               placeholder="mario.rossi@studio-rspp.it"
-              className={`input-field pl-10 ${errors.email ? "error" : ""}`}
+              className={`input-field pl-11 ${errors.email ? "error" : ""}`}
             />
           </div>
           {errors.email && <p className="error-message">{errors.email}</p>}
@@ -258,7 +258,7 @@ export default function RegisterPage() {
           </label>
           <div className="relative">
             <Building2
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
               style={{ color: "var(--color-text-muted)" }}
             />
             <input
@@ -268,7 +268,7 @@ export default function RegisterPage() {
               value={form.companyName}
               onChange={(e) => updateField("companyName", e.target.value)}
               placeholder="Studio RSPP Associati"
-              className={`input-field pl-10 ${errors.companyName ? "error" : ""}`}
+              className={`input-field pl-11 ${errors.companyName ? "error" : ""}`}
             />
           </div>
           {errors.companyName && <p className="error-message">{errors.companyName}</p>}
@@ -282,7 +282,7 @@ export default function RegisterPage() {
           </label>
           <div className="relative">
             <Phone
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
               style={{ color: "var(--color-text-muted)" }}
             />
             <input
@@ -292,7 +292,7 @@ export default function RegisterPage() {
               value={form.phone}
               onChange={(e) => updateField("phone", e.target.value)}
               placeholder="+39 02 1234567"
-              className={`input-field pl-10 ${errors.phone ? "error" : ""}`}
+              className={`input-field pl-11 ${errors.phone ? "error" : ""}`}
             />
           </div>
           {errors.phone && <p className="error-message">{errors.phone}</p>}
@@ -305,7 +305,7 @@ export default function RegisterPage() {
           </label>
           <div className="relative">
             <Lock
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
               style={{ color: "var(--color-text-muted)" }}
             />
             <input
@@ -315,7 +315,7 @@ export default function RegisterPage() {
               value={form.password}
               onChange={(e) => updateField("password", e.target.value)}
               placeholder="Min. 8 caratteri"
-              className={`input-field pl-10 pr-10 ${errors.password ? "error" : ""}`}
+              className={`input-field pl-11 pr-10 ${errors.password ? "error" : ""}`}
             />
             <button
               type="button"
@@ -337,7 +337,7 @@ export default function RegisterPage() {
           </label>
           <div className="relative">
             <Lock
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
               style={{ color: "var(--color-text-muted)" }}
             />
             <input
@@ -347,7 +347,7 @@ export default function RegisterPage() {
               value={form.confirmPassword}
               onChange={(e) => updateField("confirmPassword", e.target.value)}
               placeholder="Ripeti la password"
-              className={`input-field pl-10 pr-10 ${errors.confirmPassword ? "error" : ""}`}
+              className={`input-field pl-11 pr-10 ${errors.confirmPassword ? "error" : ""}`}
             />
             <button
               type="button"

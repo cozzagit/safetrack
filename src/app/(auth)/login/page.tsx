@@ -112,7 +112,7 @@ export default function LoginPage() {
           </label>
           <div className="relative">
             <Mail
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
               style={{ color: "var(--color-text-muted)" }}
             />
             <input
@@ -122,7 +122,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="nome@studio.it"
-              className={`input-field pl-10 ${errors.email ? "error" : ""}`}
+              className={`input-field pl-11 ${errors.email ? "error" : ""}`}
             />
           </div>
           {errors.email && <p className="error-message">{errors.email}</p>}
@@ -135,7 +135,7 @@ export default function LoginPage() {
           </label>
           <div className="relative">
             <Lock
-              className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
+              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
               style={{ color: "var(--color-text-muted)" }}
             />
             <input
@@ -145,7 +145,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••••••"
-              className={`input-field pl-10 pr-10 ${errors.password ? "error" : ""}`}
+              className={`input-field pl-11 pr-10 ${errors.password ? "error" : ""}`}
             />
             <button
               type="button"
