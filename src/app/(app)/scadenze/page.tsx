@@ -132,10 +132,15 @@ function CompleteModal({
   );
 
   useEffect(() => {
-    if (open) {
-      setCompletionDate(format(new Date(), "yyyy-MM-dd"));
+    if (open && deadline) {
+      // Default to the deadline's due date (when it was supposed to be done)
+      // If due date is in the future, use today instead
+      const dueDate = new Date(deadline.dueDate);
+      const today = new Date();
+      const defaultDate = dueDate <= today ? dueDate : today;
+      setCompletionDate(format(defaultDate, "yyyy-MM-dd"));
     }
-  }, [open]);
+  }, [open, deadline]);
 
   if (!deadline) return null;
 
