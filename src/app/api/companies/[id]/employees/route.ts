@@ -32,10 +32,10 @@ async function fetchOwnedCompany(companyId: string, userId: string) {
 const createEmployeeSchema = z.object({
   firstName: z.string().min(1, 'Nome obbligatorio').max(100),
   lastName: z.string().min(1, 'Cognome obbligatorio').max(100),
-  fiscalCode: z.string().max(16).optional(),
-  role: z.string().max(100).optional(),
-  jobTitle: z.string().max(255).optional(),
-  hiringDate: z.string().datetime({ offset: true }).optional().nullable(),
+  fiscalCode: z.string().max(16).optional().nullable(),
+  role: z.string().max(100).optional().nullable(),
+  jobTitle: z.string().max(255).optional().nullable(),
+  hiringDate: z.string().optional().nullable(), // Accept any date string, parse later
   isPreposto: z.boolean().optional().default(false),
   isDirigente: z.boolean().optional().default(false),
   isRls: z.boolean().optional().default(false),

@@ -216,7 +216,17 @@ function AddEmployeeModal({ companyId, onSuccess, onClose }: AddEmployeeModalPro
 
       if (!res.ok) {
         const json = await res.json().catch(() => ({}));
-        setApiError(json?.error?.message ?? "Errore durante il salvataggio");
+        const errMsg = json?.error?.message ?? "Errore durante il salvataggio";
+        const details = json?.error?.details;
+        if (details && Array.isArray(details)) {
+          // Show specific field errors from Zod
+          const fieldErrors = details.map((d: { path?: string[]; message?: string }) =>
+            `${d.path?.join('.') || 'campo'}: ${d.message || 'non valido'}`
+          ).join(', ');
+          setApiError(fieldErrors || errMsg);
+        } else {
+          setApiError(errMsg);
+        }
         return;
       }
 
