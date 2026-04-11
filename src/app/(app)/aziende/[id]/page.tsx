@@ -26,6 +26,10 @@ import {
   Heart,
   ChevronRight,
   History,
+  ShieldCheck,
+  ScrollText,
+  Send,
+  Copy,
 } from "lucide-react";
 import { RiskBadge } from "@/components/shared/RiskBadge";
 import { DeadlineStatusBadge } from "@/components/shared/DeadlineStatusBadge";
@@ -1014,6 +1018,356 @@ function DocumentsTab() {
   );
 }
 
+// ─── Sollecito Modal ─────────────────────────────────────────────────────────
+
+function SollecitoModal({
+  companyId,
+  contactEmail,
+  onClose,
+}: {
+  companyId: string;
+  contactEmail: string | null;
+  onClose: () => void;
+}) {
+  const [loading, setLoading] = useState(false);
+  const [letterContent, setLetterContent] = useState<string | null>(null);
+  const [sendEmailChecked, setSendEmailChecked] = useState(!!contactEmail);
+  const [result, setResult] = useState<{
+    emailSent: boolean;
+    deadlineCount: number;
+  } | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  // Generate preview on mount
+  useEffect(() => {
+    async function loadPreview() {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/companies/${companyId}/solicitation`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ sendEmail: false }),
+        });
+        if (!res.ok) {
+          const json = await res.json().catch(() => ({}));
+          setError(json?.error?.message ?? "Errore nella generazione");
+          return;
+        }
+        const json = await res.json();
+        setLetterContent(json.data.letterContent);
+      } catch {
+        setError("Errore di rete.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadPreview();
+  }, [companyId]);
+
+  async function handleSend() {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/companies/${companyId}/solicitation`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ sendEmail: sendEmailChecked }),
+      });
+      if (!res.ok) {
+        const json = await res.json().catch(() => ({}));
+        setError(json?.error?.message ?? "Errore nell'invio");
+        return;
+      }
+      const json = await res.json();
+      setResult({
+        emailSent: json.data.emailSent,
+        deadlineCount: json.data.deadlineCount,
+      });
+    } catch {
+      setError("Errore di rete.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handlePrint() {
+    if (!letterContent) return;
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) return;
+    printWindow.document.write(`<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="utf-8"/>
+  <title>Sollecito Sicurezza</title>
+  <style>
+    body { font-family: 'Times New Roman', serif; font-size: 12pt; line-height: 1.8; padding: 40px 60px; color: #1e293b; }
+    pre { white-space: pre-wrap; font-family: inherit; margin: 0; }
+  </style>
+</head>
+<body><pre>${letterContent.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</pre></body>
+</html>`);
+    printWindow.document.close();
+    printWindow.print();
+  }
+
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4"
+      style={{ backgroundColor: "rgba(15, 23, 42, 0.55)" }}
+      onClick={(e) => {
+        if (e.target === e.currentTarget && !loading) onClose();
+      }}
+    >
+      <div
+        className="w-full sm:max-w-2xl max-h-[92dvh] flex flex-col overflow-hidden"
+        style={{
+          backgroundColor: "var(--color-surface)",
+          borderRadius: "var(--radius-xl) var(--radius-xl) 0 0",
+          boxShadow: "var(--shadow-xl)",
+        }}
+      >
+        {/* Header */}
+        <div
+          className="flex items-center justify-between px-5 py-4 flex-shrink-0"
+          style={{ borderBottom: "1px solid var(--color-border)" }}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className="w-10 h-10 rounded-xl flex items-center justify-center"
+              style={{ backgroundColor: "var(--color-danger-100)" }}
+            >
+              <ScrollText className="w-5 h-5" style={{ color: "var(--color-danger)" }} />
+            </div>
+            <div>
+              <h2 className="text-base font-bold" style={{ color: "var(--color-text-primary)" }}>
+                Sollecito Formale
+              </h2>
+              <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
+                Lettera di messa in mora D.Lgs. 81/08
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg"
+            style={{ color: "var(--color-text-muted)" }}
+            disabled={loading}
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="overflow-y-auto flex-1 px-5 py-4">
+          {result ? (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <CheckCircle2
+                className="w-12 h-12 mb-4"
+                style={{ color: "var(--color-accent)" }}
+              />
+              <p
+                className="text-base font-bold mb-2"
+                style={{ color: "var(--color-text-primary)" }}
+              >
+                Sollecito generato e registrato
+              </p>
+              <p className="text-sm mb-4" style={{ color: "var(--color-text-secondary)" }}>
+                {result.deadlineCount} scadenz{result.deadlineCount === 1 ? "a inclusa" : "e incluse"}.
+                {result.emailSent
+                  ? " Email inviata con successo."
+                  : ""}
+              </p>
+              <button onClick={onClose} className="btn-primary">
+                Chiudi
+              </button>
+            </div>
+          ) : error && !letterContent ? (
+            <div
+              className="flex items-start gap-2 p-3 rounded-lg text-sm"
+              style={{
+                backgroundColor: "var(--color-danger-50)",
+                color: "var(--color-danger)",
+                border: "1px solid var(--color-danger-100)",
+              }}
+            >
+              <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+              {error}
+            </div>
+          ) : loading && !letterContent ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2
+                className="w-6 h-6 animate-spin"
+                style={{ color: "var(--color-primary)" }}
+              />
+            </div>
+          ) : letterContent ? (
+            <div>
+              {error && (
+                <div
+                  className="flex items-start gap-2 p-3 rounded-lg text-sm mb-4"
+                  style={{
+                    backgroundColor: "var(--color-danger-50)",
+                    color: "var(--color-danger)",
+                    border: "1px solid var(--color-danger-100)",
+                  }}
+                >
+                  <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                  {error}
+                </div>
+              )}
+
+              {/* Letter preview */}
+              <div
+                className="p-4 rounded-lg text-sm leading-relaxed whitespace-pre-wrap font-serif"
+                style={{
+                  backgroundColor: "var(--color-background)",
+                  border: "1px solid var(--color-border)",
+                  color: "var(--color-text-primary)",
+                  maxHeight: "400px",
+                  overflowY: "auto",
+                }}
+              >
+                {letterContent}
+              </div>
+
+              {/* Email checkbox */}
+              {contactEmail && (
+                <label className="flex items-center gap-3 mt-4 p-3 rounded-lg cursor-pointer select-none" style={{
+                  border: `1.5px solid ${sendEmailChecked ? "var(--color-primary)" : "var(--color-border)"}`,
+                  backgroundColor: sendEmailChecked ? "var(--color-primary-50)" : "transparent",
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={sendEmailChecked}
+                    onChange={(e) => setSendEmailChecked(e.target.checked)}
+                    className="sr-only"
+                  />
+                  <div
+                    className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0"
+                    style={{
+                      backgroundColor: sendEmailChecked
+                        ? "var(--color-primary)"
+                        : "var(--color-border)",
+                    }}
+                  >
+                    {sendEmailChecked && (
+                      <CheckCircle2 className="w-3.5 h-3.5 text-white" />
+                    )}
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium" style={{ color: "var(--color-text-primary)" }}>
+                      Invia via email a{" "}
+                      <span className="font-mono text-xs">{contactEmail}</span>
+                    </span>
+                  </div>
+                </label>
+              )}
+            </div>
+          ) : null}
+        </div>
+
+        {/* Footer */}
+        {!result && letterContent && (
+          <div
+            className="px-5 py-4 flex gap-3 flex-shrink-0"
+            style={{ borderTop: "1px solid var(--color-border)" }}
+          >
+            <button onClick={handlePrint} className="btn-secondary flex-1">
+              <Copy className="w-4 h-4" />
+              Stampa PDF
+            </button>
+            <button
+              onClick={handleSend}
+              className="btn-primary flex-1"
+              disabled={loading}
+              style={{ backgroundColor: "var(--color-danger)" }}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
+              {loading ? "Invio..." : sendEmailChecked ? "Invia e Salva" : "Salva Sollecito"}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Solicitation History ────────────────────────────────────────────────────
+
+function SolicitationHistory({ companyId }: { companyId: string }) {
+  const [history, setHistory] = useState<
+    { id: string; createdAt: string; deadlineCount: number; emailSent: boolean; emailTo: string | null }[]
+  >([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch(`/api/companies/${companyId}/solicitation`);
+        if (res.ok) {
+          const json = await res.json();
+          setHistory(json.data ?? []);
+        }
+      } catch {
+        // Silent fail
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [companyId]);
+
+  if (loading || history.length === 0) return null;
+
+  return (
+    <div className="card p-4 mt-4">
+      <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: "var(--color-text-muted)" }}>
+        Storico Solleciti
+      </p>
+      <div className="space-y-2">
+        {history.slice(0, 5).map((h) => (
+          <div
+            key={h.id}
+            className="flex items-center justify-between text-xs p-2 rounded-lg"
+            style={{ backgroundColor: "var(--color-background)" }}
+          >
+            <div className="flex items-center gap-2">
+              <ScrollText className="w-3.5 h-3.5" style={{ color: "var(--color-danger)" }} />
+              <span style={{ color: "var(--color-text-primary)" }}>
+                {new Date(h.createdAt).toLocaleDateString("it-IT", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "numeric",
+                })}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span style={{ color: "var(--color-text-muted)" }}>
+                {h.deadlineCount} scadenz{h.deadlineCount === 1 ? "a" : "e"}
+              </span>
+              {h.emailSent && (
+                <span
+                  className="badge text-[10px]"
+                  style={{
+                    backgroundColor: "var(--color-accent-100)",
+                    color: "var(--color-accent-dark)",
+                  }}
+                >
+                  Email inviata
+                </span>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ─── Stat Chip ────────────────────────────────────────────────────────────────
 
 function StatChip({
@@ -1060,6 +1414,7 @@ export default function AziendaDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<Tab>("dipendenti");
   const [archiving, setArchiving] = useState(false);
+  const [showSollecito, setShowSollecito] = useState(false);
 
   const loadCompany = useCallback(async () => {
     try {
@@ -1237,7 +1592,28 @@ export default function AziendaDetailPage() {
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-2 flex-shrink-0">
+          <div className="flex flex-wrap items-center gap-2 flex-shrink-0">
+            <Link
+              href={`/aziende/${id}/ispezione`}
+              className="btn-primary text-sm px-4"
+              style={{ backgroundColor: "var(--color-danger)" }}
+            >
+              <ShieldCheck className="w-4 h-4" />
+              Kit Ispezione ASL
+            </Link>
+            {deadlineSummary.overdue > 0 && (
+              <button
+                onClick={() => setShowSollecito(true)}
+                className="btn-secondary text-sm px-4"
+                style={{
+                  color: "var(--color-danger)",
+                  borderColor: "var(--color-danger)",
+                }}
+              >
+                <ScrollText className="w-4 h-4" />
+                Genera Sollecito
+              </button>
+            )}
             <Link
               href={`/aziende/${id}/modifica`}
               className="btn-secondary text-sm px-4"
@@ -1359,6 +1735,21 @@ export default function AziendaDetailPage() {
           {activeTab === "documenti" && <DocumentsTab />}
         </div>
       </div>
+
+      {/* Solicitation history */}
+      <SolicitationHistory companyId={company.id} />
+
+      {/* Sollecito Modal */}
+      {showSollecito && (
+        <SollecitoModal
+          companyId={company.id}
+          contactEmail={company.contactEmail}
+          onClose={() => {
+            setShowSollecito(false);
+            loadCompany(); // Refresh data
+          }}
+        />
+      )}
     </div>
   );
 }

@@ -419,6 +419,69 @@ export async function sendOverdueAlertEmail(
 
 // ─── D. Weekly summary email ──────────────────────────────────────────────────
 
+// ─── E. Solicitation letter email ────────────────────────────────────────────
+
+export async function sendSolicitationEmail(
+  to: string,
+  companyName: string,
+  legalRepresentative: string,
+  rsppName: string,
+  rsppCompany: string,
+  letterContent: string,
+  deadlineCount: number
+): Promise<boolean> {
+  // Convert plain text letter to HTML
+  const letterHtml = letterContent
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n\n/g, '</p><p style="margin:0 0 12px 0;font-size:14px;color:#1e293b;line-height:1.7;">')
+    .replace(/\n/g, '<br/>')
+    .replace(
+      /SCADUTI o NON ADEMPIUTI/g,
+      '<strong style="color:#dc2626;">SCADUTI o NON ADEMPIUTI</strong>'
+    )
+    .replace(
+      /URGENZA/g,
+      '<strong style="color:#dc2626;">URGENZA</strong>'
+    );
+
+  const body = `
+    <!-- Alert banner -->
+    <table role="presentation" cellpadding="0" cellspacing="0" width="100%"
+           style="background-color:#fee2e2;border-radius:8px;border:1px solid #fecaca;margin-bottom:24px;">
+      <tr>
+        <td style="padding:16px 20px;">
+          <p style="margin:0;font-size:15px;font-weight:700;color:#dc2626;">
+            &#9888; Sollecito Formale — Adempimenti Sicurezza sul Lavoro
+          </p>
+          <p style="margin:4px 0 0 0;font-size:13px;color:#b91c1c;">
+            ${deadlineCount} adempiment${deadlineCount === 1 ? 'o non rispettato' : 'i non rispettati'} per ${companyName}
+          </p>
+        </td>
+      </tr>
+    </table>
+
+    <div style="background-color:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:24px;margin-bottom:24px;">
+      <p style="margin:0 0 12px 0;font-size:14px;color:#1e293b;line-height:1.7;">
+        ${letterHtml}
+      </p>
+    </div>
+
+    <p style="margin:0 0 8px 0;font-size:12px;color:#94a3b8;text-align:center;">
+      Questo sollecito è stato generato automaticamente da SafeTrack per conto di ${rsppName}${rsppCompany ? ` — ${rsppCompany}` : ''}.
+    </p>
+  `;
+
+  return sendEmail({
+    to,
+    subject: `SOLLECITO: ${deadlineCount} adempiment${deadlineCount === 1 ? 'o' : 'i'} sicurezza scadut${deadlineCount === 1 ? 'o' : 'i'} — ${companyName}`,
+    html: emailLayout('Sollecito Adempimenti Sicurezza', body),
+  });
+}
+
+// ─── D. Weekly summary email ──────────────────────────────────────────────────
+
 export async function sendWeeklySummaryEmail(
   to: string,
   rsppName: string,

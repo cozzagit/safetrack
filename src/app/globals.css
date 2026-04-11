@@ -380,6 +380,10 @@ body {
   }
 
   /* Show expanded content in print */
+  [data-print-show="true"] {
+    display: block !important;
+  }
+
   main {
     padding: 0 !important;
     overflow: visible !important;

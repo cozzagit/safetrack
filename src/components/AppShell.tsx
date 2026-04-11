@@ -17,6 +17,7 @@ import {
   X,
   ChevronDown,
   User,
+  Upload,
 } from "lucide-react";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { signOut, useSession } from "@/lib/auth-client";
@@ -27,6 +28,7 @@ const NAV_ITEMS = [
   { href: "/scadenze", label: "Scadenze", Icon: Calendar },
   { href: "/documenti", label: "Documenti", Icon: FileText },
   { href: "/report", label: "Report", Icon: BarChart3 },
+  { href: "/import", label: "Importa", Icon: Upload },
 ] as const;
 
 export default function AppShell({ children }: { children: React.ReactNode }) {

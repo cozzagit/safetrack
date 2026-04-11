@@ -14,6 +14,8 @@ import {
   Loader2,
   Calendar,
   Users,
+  Upload,
+  GraduationCap,
 } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import { format } from "date-fns";
@@ -41,6 +43,32 @@ interface DashboardStats {
   complianceRate: number;
   upcomingDeadlines: UpcomingDeadline[];
   recentActivity: unknown[];
+}
+
+interface MonthlyData {
+  month: string;
+  criticalCompanies: {
+    id: string;
+    name: string;
+    overdueCount: number;
+    expiringCount: number;
+    healthScore: number;
+  }[];
+  thisMonthDeadlines: {
+    total: number;
+    byCategory: Record<string, number>;
+    byCompany: { companyId: string; companyName: string; count: number }[];
+  };
+  trainingOpportunities: {
+    type: string;
+    employeeCount: number;
+    companies: string[];
+  }[];
+  companyHealthScores: {
+    id: string;
+    name: string;
+    score: number;
+  }[];
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -75,6 +103,18 @@ function getCategoryLabel(cat: string): string {
     altro: "Altro",
   };
   return map[cat] || cat;
+}
+
+function getScoreColor(score: number): string {
+  if (score >= 75) return "var(--color-accent)";
+  if (score >= 50) return "var(--color-warning)";
+  return "var(--color-danger)";
+}
+
+function getScoreBg(score: number): string {
+  if (score >= 75) return "var(--color-accent-50)";
+  if (score >= 50) return "var(--color-warning-50)";
+  return "var(--color-danger-50)";
 }
 
 // ─── Stat Card ───────────────────────────────────────────────────────────────
@@ -180,6 +220,22 @@ function ComplianceRing({ rate }: { rate: number }) {
   );
 }
 
+// ─── Health Score Badge ─────────────────────────────────────────────────────
+
+function HealthBadge({ score }: { score: number }) {
+  return (
+    <span
+      className="inline-flex items-center justify-center w-10 h-10 rounded-full text-sm font-bold flex-shrink-0"
+      style={{
+        backgroundColor: getScoreBg(score),
+        color: getScoreColor(score),
+      }}
+    >
+      {score}
+    </span>
+  );
+}
+
 // ─── Quick Actions ───────────────────────────────────────────────────────────
 
 const QUICK_ACTIONS = [
@@ -192,20 +248,28 @@ const QUICK_ACTIONS = [
     bgVar: "--color-primary-50",
   },
   {
+    href: "/import",
+    label: "Importa Excel",
+    description: "Importa dipendenti e scadenze da Excel",
+    Icon: Upload,
+    colorVar: "--color-accent",
+    bgVar: "--color-accent-50",
+  },
+  {
     href: "/documenti/scansiona",
     label: "Scansiona Attestato",
     description: "Carica e analizza un documento con AI",
     Icon: QrCode,
-    colorVar: "--color-accent",
-    bgVar: "--color-accent-50",
+    colorVar: "--color-warning",
+    bgVar: "--color-warning-50",
   },
   {
     href: "/scadenze",
     label: "Vedi Calendario",
     description: "Controlla tutte le scadenze imminenti",
     Icon: CalendarDays,
-    colorVar: "--color-warning",
-    bgVar: "--color-warning-50",
+    colorVar: "--color-primary",
+    bgVar: "--color-primary-50",
   },
 ] as const;
 
@@ -216,16 +280,26 @@ export default function DashboardPage() {
   const firstName = session?.user?.name?.split(" ")[0] ?? "Utente";
 
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [monthly, setMonthly] = useState<MonthlyData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch("/api/dashboard/stats");
-        if (!res.ok) throw new Error("Errore nel caricamento");
-        const json = await res.json();
-        setStats(json.data);
+        const [statsRes, monthlyRes] = await Promise.all([
+          fetch("/api/dashboard/stats"),
+          fetch("/api/dashboard/monthly"),
+        ]);
+
+        if (!statsRes.ok) throw new Error("Errore nel caricamento stats");
+        const statsJson = await statsRes.json();
+        setStats(statsJson.data);
+
+        if (monthlyRes.ok) {
+          const monthlyJson = await monthlyRes.json();
+          setMonthly(monthlyJson.data);
+        }
       } catch {
         setError("Impossibile caricare la dashboard. Riprova.");
       } finally {
@@ -293,10 +367,16 @@ export default function DashboardPage() {
             {today}
           </p>
         </div>
-        <Link href="/aziende/nuova" className="btn-primary self-start">
-          <Plus className="w-4 h-4" />
-          Aggiungi Azienda
-        </Link>
+        <div className="flex gap-2 self-start">
+          <Link href="/import" className="btn-secondary">
+            <Upload className="w-4 h-4" />
+            Importa
+          </Link>
+          <Link href="/aziende/nuova" className="btn-primary">
+            <Plus className="w-4 h-4" />
+            Aggiungi Azienda
+          </Link>
+        </div>
       </div>
 
       {/* Stat cards */}
@@ -337,6 +417,276 @@ export default function DashboardPage() {
           bgVar="--color-accent-50"
         />
       </div>
+
+      {/* ─── Monthly Plan Section ─────────────────────────────────────── */}
+      {monthly && monthly.thisMonthDeadlines.total > 0 && (
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Piano del Mese */}
+          <div className="card">
+            <div
+              className="px-6 py-4 flex items-center justify-between"
+              style={{ borderBottom: "1px solid var(--color-border)" }}
+            >
+              <div className="flex items-center gap-2">
+                <Calendar
+                  className="w-5 h-5"
+                  style={{ color: "var(--color-primary)" }}
+                />
+                <h2
+                  className="font-semibold text-base"
+                  style={{ color: "var(--color-text-primary)" }}
+                >
+                  Piano del Mese
+                </h2>
+              </div>
+              <span
+                className="badge"
+                style={{
+                  backgroundColor: "var(--color-primary-50)",
+                  color: "var(--color-primary)",
+                }}
+              >
+                {monthly.month}
+              </span>
+            </div>
+
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <p
+                  className="text-sm"
+                  style={{ color: "var(--color-text-muted)" }}
+                >
+                  Scadenze questo mese
+                </p>
+                <p
+                  className="text-2xl font-bold"
+                  style={{ color: "var(--color-text-primary)" }}
+                >
+                  {monthly.thisMonthDeadlines.total}
+                </p>
+              </div>
+
+              {/* Category breakdown */}
+              <div className="space-y-2 mb-4">
+                {Object.entries(monthly.thisMonthDeadlines.byCategory).map(
+                  ([cat, count]) => (
+                    <div
+                      key={cat}
+                      className="flex items-center justify-between text-sm"
+                    >
+                      <span style={{ color: "var(--color-text-secondary)" }}>
+                        {getCategoryLabel(cat)}
+                      </span>
+                      <span
+                        className="font-semibold"
+                        style={{ color: "var(--color-text-primary)" }}
+                      >
+                        {count}
+                      </span>
+                    </div>
+                  )
+                )}
+              </div>
+
+              {/* Company breakdown */}
+              {monthly.thisMonthDeadlines.byCompany.length > 0 && (
+                <>
+                  <div
+                    className="h-px my-3"
+                    style={{ backgroundColor: "var(--color-border)" }}
+                  />
+                  <p
+                    className="text-xs font-semibold mb-2"
+                    style={{ color: "var(--color-text-muted)" }}
+                  >
+                    Per azienda
+                  </p>
+                  <div className="space-y-1.5">
+                    {monthly.thisMonthDeadlines.byCompany
+                      .slice(0, 5)
+                      .map((item) => (
+                        <Link
+                          key={item.companyId}
+                          href={`/aziende/${item.companyId}`}
+                          className="flex items-center justify-between text-sm hover:bg-[var(--color-primary-50)] rounded-lg px-2 py-1 -mx-2 transition-colors"
+                        >
+                          <span
+                            className="truncate"
+                            style={{ color: "var(--color-text-primary)" }}
+                          >
+                            {item.companyName}
+                          </span>
+                          <span
+                            className="badge flex-shrink-0 ml-2"
+                            style={{
+                              backgroundColor: "var(--color-warning-50)",
+                              color: "var(--color-warning)",
+                            }}
+                          >
+                            {item.count}
+                          </span>
+                        </Link>
+                      ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Training Opportunities */}
+          <div className="card">
+            <div
+              className="px-6 py-4 flex items-center gap-2"
+              style={{ borderBottom: "1px solid var(--color-border)" }}
+            >
+              <GraduationCap
+                className="w-5 h-5"
+                style={{ color: "var(--color-accent)" }}
+              />
+              <h2
+                className="font-semibold text-base"
+                style={{ color: "var(--color-text-primary)" }}
+              >
+                Opportunita Formative
+              </h2>
+            </div>
+
+            {monthly.trainingOpportunities.length === 0 ? (
+              <div className="px-6 py-8 text-center">
+                <GraduationCap
+                  className="w-8 h-8 mx-auto mb-2"
+                  style={{ color: "var(--color-text-muted)" }}
+                />
+                <p
+                  className="text-sm"
+                  style={{ color: "var(--color-text-muted)" }}
+                >
+                  Nessuna opportunita di formazione raggruppata
+                </p>
+              </div>
+            ) : (
+              <div
+                className="divide-y"
+                style={{ borderColor: "var(--color-border)" }}
+              >
+                {monthly.trainingOpportunities.map((opp, i) => (
+                  <div key={i} className="px-6 py-4">
+                    <p
+                      className="text-sm font-semibold mb-1"
+                      style={{ color: "var(--color-text-primary)" }}
+                    >
+                      {opp.type}
+                    </p>
+                    <p
+                      className="text-xs mb-2"
+                      style={{ color: "var(--color-text-muted)" }}
+                    >
+                      <span
+                        className="font-bold"
+                        style={{ color: "var(--color-accent-dark)" }}
+                      >
+                        {opp.employeeCount} dipendenti
+                      </span>{" "}
+                      da{" "}
+                      <span className="font-medium">
+                        {opp.companies.length} aziend{opp.companies.length === 1 ? "a" : "e"}
+                      </span>
+                    </p>
+                    <div className="flex flex-wrap gap-1">
+                      {opp.companies.slice(0, 4).map((c) => (
+                        <span
+                          key={c}
+                          className="text-[10px] px-1.5 py-0.5 rounded-full"
+                          style={{
+                            backgroundColor: "var(--color-primary-50)",
+                            color: "var(--color-primary)",
+                          }}
+                        >
+                          {c}
+                        </span>
+                      ))}
+                      {opp.companies.length > 4 && (
+                        <span
+                          className="text-[10px] px-1.5 py-0.5 rounded-full"
+                          style={{
+                            backgroundColor: "var(--color-border)",
+                            color: "var(--color-text-muted)",
+                          }}
+                        >
+                          +{opp.companies.length - 4}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ─── Company Health Scores ────────────────────────────────────── */}
+      {monthly && monthly.companyHealthScores.length > 0 && (
+        <div className="card">
+          <div
+            className="px-6 py-4 flex items-center justify-between"
+            style={{ borderBottom: "1px solid var(--color-border)" }}
+          >
+            <div className="flex items-center gap-2">
+              <ShieldCheck
+                className="w-5 h-5"
+                style={{ color: "var(--color-accent)" }}
+              />
+              <h2
+                className="font-semibold text-base"
+                style={{ color: "var(--color-text-primary)" }}
+              >
+                Salute Aziende
+              </h2>
+            </div>
+            <Link
+              href="/aziende"
+              className="text-sm font-medium flex items-center gap-1"
+              style={{ color: "var(--color-primary)" }}
+            >
+              Vedi tutte
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="p-4">
+            <div className="flex gap-3 overflow-x-auto pb-2 -mx-1 px-1">
+              {monthly.companyHealthScores.map((company) => (
+                <Link
+                  key={company.id}
+                  href={`/aziende/${company.id}`}
+                  className="card card-hover p-4 min-w-[140px] flex-shrink-0 flex flex-col items-center gap-2 text-center"
+                >
+                  <HealthBadge score={company.score} />
+                  <p
+                    className="text-xs font-semibold truncate max-w-[120px]"
+                    style={{ color: "var(--color-text-primary)" }}
+                  >
+                    {company.name}
+                  </p>
+                  <p
+                    className="text-[10px]"
+                    style={{
+                      color: getScoreColor(company.score),
+                    }}
+                  >
+                    {company.score >= 75
+                      ? "In regola"
+                      : company.score >= 50
+                        ? "Attenzione"
+                        : "Critica"}
+                  </p>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Upcoming deadlines */}
@@ -379,6 +729,10 @@ export default function DashboardPage() {
               >
                 Le scadenze appariranno qui quando verranno create.
               </p>
+              <Link href="/import" className="btn-primary mt-4 inline-flex">
+                <Upload className="w-4 h-4" />
+                Importa da Excel
+              </Link>
             </div>
           ) : (
             <div className="divide-y" style={{ borderColor: "var(--color-border)" }}>
@@ -401,8 +755,7 @@ export default function DashboardPage() {
                     >
                       {d.employeeName
                         ? `${d.employeeName} - ${d.companyName}`
-                        : d.companyName}
-                      {" "}
+                        : d.companyName}{" "}
                       <span
                         className="inline-block px-1.5 py-0.5 rounded text-[10px] font-medium"
                         style={{
