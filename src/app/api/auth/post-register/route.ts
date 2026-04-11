@@ -2,18 +2,25 @@
  * POST /api/auth/post-register
  *
  * Called by the register page immediately after a successful Better Auth sign-up.
- * Sends the welcome email to the newly created user.
+ * Saves extra profile fields (firstName, lastName, companyName, phone) to the DB
+ * and sends the welcome email.
  *
- * Body: { email: string; firstName: string }
+ * Body: { email, firstName, lastName, companyName, phone }
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { sendWelcomeEmail } from '@/lib/services/email-service';
+import { db } from '@/lib/db';
+import { users } from '@/lib/db/schema';
+import { eq } from 'drizzle-orm';
 import { z } from 'zod';
 
 const bodySchema = z.object({
   email: z.string().email(),
   firstName: z.string().min(1),
+  lastName: z.string().optional(),
+  companyName: z.string().optional(),
+  phone: z.string().nullable().optional(),
 });
 
 export async function POST(request: NextRequest) {
@@ -35,9 +42,24 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const { email, firstName } = parsed.data;
+  const { email, firstName, lastName, companyName, phone } = parsed.data;
 
-  // Fire-and-forget — don't block the response if email fails
+  // Update user profile with extra fields
+  try {
+    await db
+      .update(users)
+      .set({
+        firstName: firstName,
+        lastName: lastName || null,
+        companyName: companyName || null,
+        phone: phone || null,
+      })
+      .where(eq(users.email, email));
+  } catch (err) {
+    console.error('[post-register] DB update error:', err);
+  }
+
+  // Send welcome email (fire and forget)
   sendWelcomeEmail(email, firstName).catch((err) => {
     console.error('[post-register] sendWelcomeEmail error:', err);
   });

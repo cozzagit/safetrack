@@ -1,12 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Mail, Lock, Eye, EyeOff, User, Building2, Phone, Loader2 } from "lucide-react";
-import { signUp } from "@/lib/auth-client";
+import Link from "next/link";
+import {
+  ShieldCheck,
+  Eye,
+  EyeOff,
+  Loader2,
+  Check,
+} from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
-interface FormData {
+const { signUp } = authClient;
+
+interface FormState {
   firstName: string;
   lastName: string;
   email: string;
@@ -17,94 +25,54 @@ interface FormData {
   acceptTerms: boolean;
 }
 
-interface FormErrors {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  companyName?: string;
-  phone?: string;
-  password?: string;
-  confirmPassword?: string;
-  acceptTerms?: string;
-  general?: string;
-}
-
-const INITIAL_FORM: FormData = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  companyName: "",
-  phone: "",
-  password: "",
-  confirmPassword: "",
-  acceptTerms: false,
-};
+type FormErrors = Partial<Record<keyof FormState | "general", string>>;
 
 export default function RegisterPage() {
   const router = useRouter();
-  const [form, setForm] = useState<FormData>(INITIAL_FORM);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [form, setForm] = useState<FormState>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    companyName: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    acceptTerms: false,
+  });
   const [errors, setErrors] = useState<FormErrors>({});
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  function updateField<K extends keyof FormData>(key: K, value: FormData[K]) {
+  function updateField<K extends keyof FormState>(key: K, value: FormState[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
-    if (errors[key as keyof FormErrors]) {
-      setErrors((prev) => ({ ...prev, [key]: undefined }));
-    }
+    if (errors[key]) setErrors((prev) => ({ ...prev, [key]: undefined }));
   }
 
-  function validateForm(): boolean {
-    const newErrors: FormErrors = {};
-
-    if (!form.firstName.trim()) {
-      newErrors.firstName = "Il nome è obbligatorio";
-    }
-
-    if (!form.lastName.trim()) {
-      newErrors.lastName = "Il cognome è obbligatorio";
-    }
-
-    if (!form.email.trim()) {
-      newErrors.email = "L'email è obbligatoria";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      newErrors.email = "Inserisci un indirizzo email valido";
-    }
-
-    if (!form.companyName.trim()) {
-      newErrors.companyName = "Il nome dello studio è obbligatorio";
-    }
-
-    if (form.phone && !/^[+\d\s\-()]{6,20}$/.test(form.phone)) {
-      newErrors.phone = "Inserisci un numero di telefono valido";
-    }
-
-    if (!form.password) {
-      newErrors.password = "La password è obbligatoria";
-    } else if (form.password.length < 8) {
-      newErrors.password = "La password deve essere di almeno 8 caratteri";
-    } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(form.password)) {
-      newErrors.password = "La password deve contenere maiuscole, minuscole e numeri";
-    }
-
-    if (!form.confirmPassword) {
-      newErrors.confirmPassword = "Conferma la password";
-    } else if (form.password !== form.confirmPassword) {
-      newErrors.confirmPassword = "Le password non coincidono";
-    }
-
-    if (!form.acceptTerms) {
-      newErrors.acceptTerms = "Devi accettare i termini per continuare";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  function validate(): FormErrors {
+    const e: FormErrors = {};
+    if (!form.firstName.trim()) e.firstName = "Il nome è obbligatorio";
+    if (!form.lastName.trim()) e.lastName = "Il cognome è obbligatorio";
+    if (!form.email.trim()) e.email = "L'email è obbligatoria";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
+      e.email = "Formato email non valido";
+    if (!form.companyName.trim()) e.companyName = "Il nome studio è obbligatorio";
+    if (!form.password) e.password = "La password è obbligatoria";
+    else if (form.password.length < 8)
+      e.password = "La password deve avere almeno 8 caratteri";
+    if (form.password !== form.confirmPassword)
+      e.confirmPassword = "Le password non corrispondono";
+    if (!form.acceptTerms) e.acceptTerms = "Devi accettare i termini per continuare";
+    return e;
   }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!validateForm()) return;
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
 
     setIsLoading(true);
     setErrors({});
@@ -114,34 +82,28 @@ export default function RegisterPage() {
         email: form.email.trim().toLowerCase(),
         password: form.password,
         name: `${form.firstName.trim()} ${form.lastName.trim()}`,
-        // Additional profile fields passed as extra data
-        // @ts-expect-error — better-auth supports extra fields via additionalFields
-        firstName: form.firstName.trim(),
-        lastName: form.lastName.trim(),
-        companyName: form.companyName.trim(),
-        phone: form.phone.trim() || undefined,
       });
 
       if (result.error) {
-        if (result.error.code === "USER_ALREADY_EXISTS") {
-          setErrors({ email: "Esiste già un account con questa email." });
-        } else {
-          setErrors({ general: "Errore durante la registrazione. Riprova più tardi." });
-        }
+        setErrors({
+          general: result.error.message || "Errore durante la registrazione.",
+        });
+        setIsLoading(false);
         return;
       }
 
-      // Send welcome email (fire-and-forget — don't block navigation on failure)
+      // Save extra profile fields + send welcome email (fire and forget)
       fetch("/api/auth/post-register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: form.email.trim().toLowerCase(),
           firstName: form.firstName.trim(),
+          lastName: form.lastName.trim(),
+          companyName: form.companyName.trim(),
+          phone: form.phone.trim() || null,
         }),
-      }).catch(() => {
-        // Silently ignore — email is best-effort
-      });
+      }).catch(() => {});
 
       router.push("/dashboard");
     } catch {
@@ -179,7 +141,7 @@ export default function RegisterPage() {
           style={{
             backgroundColor: "var(--color-danger-50)",
             color: "var(--color-danger)",
-            border: `1px solid var(--color-danger-100)`,
+            border: "1px solid var(--color-danger-100)",
           }}
         >
           <span>⚠</span>
@@ -188,33 +150,23 @@ export default function RegisterPage() {
       )}
 
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
-        {/* Name row */}
+        {/* Name row — NO icons, clean inputs */}
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="input-label" htmlFor="firstName">
-              Nome
-            </label>
-            <div className="relative">
-              <User
-                className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-                style={{ color: "var(--color-text-muted)" }}
-              />
-              <input
-                id="firstName"
-                type="text"
-                autoComplete="given-name"
-                value={form.firstName}
-                onChange={(e) => updateField("firstName", e.target.value)}
-                placeholder="Mario"
-                className={`input-field pl-11 ${errors.firstName ? "error" : ""}`}
-              />
-            </div>
+            <label className="input-label" htmlFor="firstName">Nome</label>
+            <input
+              id="firstName"
+              type="text"
+              autoComplete="given-name"
+              value={form.firstName}
+              onChange={(e) => updateField("firstName", e.target.value)}
+              placeholder="Mario"
+              className={`input-field ${errors.firstName ? "error" : ""}`}
+            />
             {errors.firstName && <p className="error-message">{errors.firstName}</p>}
           </div>
           <div>
-            <label className="input-label" htmlFor="lastName">
-              Cognome
-            </label>
+            <label className="input-label" htmlFor="lastName">Cognome</label>
             <input
               id="lastName"
               type="text"
@@ -230,47 +182,31 @@ export default function RegisterPage() {
 
         {/* Email */}
         <div>
-          <label className="input-label" htmlFor="email">
-            Indirizzo email
-          </label>
-          <div className="relative">
-            <Mail
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-              style={{ color: "var(--color-text-muted)" }}
-            />
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              value={form.email}
-              onChange={(e) => updateField("email", e.target.value)}
-              placeholder="mario.rossi@studio-rspp.it"
-              className={`input-field pl-11 ${errors.email ? "error" : ""}`}
-            />
-          </div>
+          <label className="input-label" htmlFor="email">Indirizzo email</label>
+          <input
+            id="email"
+            type="email"
+            autoComplete="email"
+            value={form.email}
+            onChange={(e) => updateField("email", e.target.value)}
+            placeholder="mario.rossi@studio-rspp.it"
+            className={`input-field ${errors.email ? "error" : ""}`}
+          />
           {errors.email && <p className="error-message">{errors.email}</p>}
         </div>
 
         {/* Company */}
         <div>
-          <label className="input-label" htmlFor="companyName">
-            Nome studio / azienda
-          </label>
-          <div className="relative">
-            <Building2
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-              style={{ color: "var(--color-text-muted)" }}
-            />
-            <input
-              id="companyName"
-              type="text"
-              autoComplete="organization"
-              value={form.companyName}
-              onChange={(e) => updateField("companyName", e.target.value)}
-              placeholder="Studio RSPP Associati"
-              className={`input-field pl-11 ${errors.companyName ? "error" : ""}`}
-            />
-          </div>
+          <label className="input-label" htmlFor="companyName">Nome studio / azienda</label>
+          <input
+            id="companyName"
+            type="text"
+            autoComplete="organization"
+            value={form.companyName}
+            onChange={(e) => updateField("companyName", e.target.value)}
+            placeholder="Studio RSPP Associati"
+            className={`input-field ${errors.companyName ? "error" : ""}`}
+          />
           {errors.companyName && <p className="error-message">{errors.companyName}</p>}
         </div>
 
@@ -280,34 +216,22 @@ export default function RegisterPage() {
             Telefono{" "}
             <span style={{ color: "var(--color-text-muted)", fontWeight: 400 }}>(opzionale)</span>
           </label>
-          <div className="relative">
-            <Phone
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-              style={{ color: "var(--color-text-muted)" }}
-            />
-            <input
-              id="phone"
-              type="tel"
-              autoComplete="tel"
-              value={form.phone}
-              onChange={(e) => updateField("phone", e.target.value)}
-              placeholder="+39 02 1234567"
-              className={`input-field pl-11 ${errors.phone ? "error" : ""}`}
-            />
-          </div>
+          <input
+            id="phone"
+            type="tel"
+            autoComplete="tel"
+            value={form.phone}
+            onChange={(e) => updateField("phone", e.target.value)}
+            placeholder="+39 02 1234567"
+            className={`input-field ${errors.phone ? "error" : ""}`}
+          />
           {errors.phone && <p className="error-message">{errors.phone}</p>}
         </div>
 
         {/* Password */}
         <div>
-          <label className="input-label" htmlFor="password">
-            Password
-          </label>
+          <label className="input-label" htmlFor="password">Password</label>
           <div className="relative">
-            <Lock
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-              style={{ color: "var(--color-text-muted)" }}
-            />
             <input
               id="password"
               type={showPassword ? "text" : "password"}
@@ -315,12 +239,13 @@ export default function RegisterPage() {
               value={form.password}
               onChange={(e) => updateField("password", e.target.value)}
               placeholder="Min. 8 caratteri"
-              className={`input-field pl-11 pr-10 ${errors.password ? "error" : ""}`}
+              className={`input-field ${errors.password ? "error" : ""}`}
+              style={{ paddingRight: 44 }}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded"
               style={{ color: "var(--color-text-muted)" }}
               aria-label={showPassword ? "Nascondi password" : "Mostra password"}
             >
@@ -332,14 +257,8 @@ export default function RegisterPage() {
 
         {/* Confirm Password */}
         <div>
-          <label className="input-label" htmlFor="confirmPassword">
-            Conferma password
-          </label>
+          <label className="input-label" htmlFor="confirmPassword">Conferma password</label>
           <div className="relative">
-            <Lock
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-              style={{ color: "var(--color-text-muted)" }}
-            />
             <input
               id="confirmPassword"
               type={showConfirmPassword ? "text" : "password"}
@@ -347,60 +266,51 @@ export default function RegisterPage() {
               value={form.confirmPassword}
               onChange={(e) => updateField("confirmPassword", e.target.value)}
               placeholder="Ripeti la password"
-              className={`input-field pl-11 pr-10 ${errors.confirmPassword ? "error" : ""}`}
+              className={`input-field ${errors.confirmPassword ? "error" : ""}`}
+              style={{ paddingRight: 44 }}
             />
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded"
               style={{ color: "var(--color-text-muted)" }}
               aria-label={showConfirmPassword ? "Nascondi password" : "Mostra password"}
             >
               {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
-          {errors.confirmPassword && (
-            <p className="error-message">{errors.confirmPassword}</p>
-          )}
+          {errors.confirmPassword && <p className="error-message">{errors.confirmPassword}</p>}
         </div>
 
-        {/* Terms */}
+        {/* Terms — proper native checkbox */}
         <div>
-          <label className="flex items-start gap-3 cursor-pointer select-none">
-            <div className="relative flex-shrink-0 mt-0.5">
-              <input
-                type="checkbox"
-                checked={form.acceptTerms}
-                onChange={(e) => updateField("acceptTerms", e.target.checked)}
-                className="sr-only"
-                id="terms"
-              />
-              <div
-                className="w-5 h-5 rounded flex items-center justify-center transition-all"
-                style={{
-                  backgroundColor: form.acceptTerms ? "var(--color-primary)" : "transparent",
-                  border: `2px solid ${form.acceptTerms ? "var(--color-primary)" : "var(--color-border)"}`,
-                }}
-                onClick={() => updateField("acceptTerms", !form.acceptTerms)}
-              >
-                {form.acceptTerms && (
-                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12">
-                    <path d="M2 6l3 3 5-5" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                )}
-              </div>
-            </div>
+          <div className="flex items-start gap-3">
+            <button
+              type="button"
+              role="checkbox"
+              aria-checked={form.acceptTerms}
+              onClick={() => updateField("acceptTerms", !form.acceptTerms)}
+              className="flex-shrink-0 mt-0.5 w-6 h-6 rounded flex items-center justify-center transition-all cursor-pointer"
+              style={{
+                backgroundColor: form.acceptTerms ? "var(--color-primary)" : "var(--color-surface)",
+                border: `2px solid ${form.acceptTerms ? "var(--color-primary)" : "var(--color-border)"}`,
+                minWidth: 24,
+                minHeight: 24,
+              }}
+            >
+              {form.acceptTerms && <Check className="w-4 h-4 text-white" />}
+            </button>
             <span className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
               Accetto i{" "}
-              <Link href="/terms" className="font-medium" style={{ color: "var(--color-primary)" }}>
+              <Link href="/terms" className="font-medium underline" style={{ color: "var(--color-primary)" }}>
                 Termini di Servizio
               </Link>{" "}
               e la{" "}
-              <Link href="/privacy" className="font-medium" style={{ color: "var(--color-primary)" }}>
+              <Link href="/privacy" className="font-medium underline" style={{ color: "var(--color-primary)" }}>
                 Privacy Policy
               </Link>
             </span>
-          </label>
+          </div>
           {errors.acceptTerms && <p className="error-message mt-1">{errors.acceptTerms}</p>}
         </div>
 
@@ -408,12 +318,12 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={isLoading}
-          className="btn-primary w-full text-base py-3"
+          className="btn-primary w-full flex items-center justify-center gap-2"
         >
           {isLoading ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              Creazione account…
+              Registrazione in corso...
             </>
           ) : (
             "Registrati gratis"
@@ -421,10 +331,10 @@ export default function RegisterPage() {
         </button>
       </form>
 
-      {/* Login link */}
-      <p className="mt-6 text-center text-sm" style={{ color: "var(--color-text-muted)" }}>
-        Hai già un account?{" "}
-        <Link href="/login" className="font-semibold" style={{ color: "var(--color-primary)" }}>
+      {/* Footer */}
+      <p className="text-center text-sm mt-6" style={{ color: "var(--color-text-muted)" }}>
+        Hai gia un account?{" "}
+        <Link href="/login" className="font-medium" style={{ color: "var(--color-primary)" }}>
           Accedi
         </Link>
       </p>

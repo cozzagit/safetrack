@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ShieldCheck, Mail, Lock, Eye, EyeOff, Loader2 } from "lucide-react";
+import { ShieldCheck, Eye, EyeOff, Loader2 } from "lucide-react";
 import { signIn } from "@/lib/auth-client";
 
 interface FormErrors {
@@ -22,17 +22,14 @@ export default function LoginPage() {
 
   function validateForm(): boolean {
     const newErrors: FormErrors = {};
-
     if (!email.trim()) {
       newErrors.email = "L'email è obbligatoria";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       newErrors.email = "Inserisci un indirizzo email valido";
     }
-
     if (!password) {
       newErrors.password = "La password è obbligatoria";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   }
@@ -96,7 +93,7 @@ export default function LoginPage() {
           style={{
             backgroundColor: "var(--color-danger-50)",
             color: "var(--color-danger)",
-            border: `1px solid var(--color-danger-100)`,
+            border: "1px solid var(--color-danger-100)",
           }}
         >
           <span>⚠</span>
@@ -107,50 +104,37 @@ export default function LoginPage() {
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         {/* Email */}
         <div>
-          <label className="input-label" htmlFor="email">
-            Indirizzo email
-          </label>
-          <div className="relative">
-            <Mail
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-              style={{ color: "var(--color-text-muted)" }}
-            />
-            <input
-              id="email"
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="nome@studio.it"
-              className={`input-field pl-11 ${errors.email ? "error" : ""}`}
-            />
-          </div>
+          <label className="input-label" htmlFor="email">Indirizzo email</label>
+          <input
+            id="email"
+            type="email"
+            autoComplete="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="nome@studio.it"
+            className={`input-field ${errors.email ? "error" : ""}`}
+          />
           {errors.email && <p className="error-message">{errors.email}</p>}
         </div>
 
         {/* Password */}
         <div>
-          <label className="input-label" htmlFor="password">
-            Password
-          </label>
+          <label className="input-label" htmlFor="password">Password</label>
           <div className="relative">
-            <Lock
-              className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 pointer-events-none"
-              style={{ color: "var(--color-text-muted)" }}
-            />
             <input
               id="password"
               type={showPassword ? "text" : "password"}
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••••••"
-              className={`input-field pl-11 pr-10 ${errors.password ? "error" : ""}`}
+              placeholder="La tua password"
+              className={`input-field ${errors.password ? "error" : ""}`}
+              style={{ paddingRight: 44 }}
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 p-1"
+              className="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded"
               style={{ color: "var(--color-text-muted)" }}
               aria-label={showPassword ? "Nascondi password" : "Mostra password"}
             >
@@ -160,27 +144,16 @@ export default function LoginPage() {
           {errors.password && <p className="error-message">{errors.password}</p>}
         </div>
 
-        {/* Forgot password */}
-        <div className="flex justify-end">
-          <Link
-            href="/reset-password"
-            className="text-sm font-medium"
-            style={{ color: "var(--color-primary)" }}
-          >
-            Password dimenticata?
-          </Link>
-        </div>
-
         {/* Submit */}
         <button
           type="submit"
           disabled={isLoading}
-          className="btn-primary w-full text-base py-3"
+          className="btn-primary w-full text-base py-3 flex items-center justify-center gap-2"
         >
           {isLoading ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              Accesso in corso…
+              Accesso in corso...
             </>
           ) : (
             "Accedi"
@@ -191,11 +164,7 @@ export default function LoginPage() {
       {/* Register link */}
       <p className="mt-6 text-center text-sm" style={{ color: "var(--color-text-muted)" }}>
         Non hai ancora un account?{" "}
-        <Link
-          href="/register"
-          className="font-semibold"
-          style={{ color: "var(--color-primary)" }}
-        >
+        <Link href="/register" className="font-semibold" style={{ color: "var(--color-primary)" }}>
           Registrati gratis
         </Link>
       </p>
