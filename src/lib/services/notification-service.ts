@@ -8,7 +8,13 @@ import {
   employees,
   pushSubscriptions,
   notifications,
+  users,
 } from '@/lib/db/schema';
+import {
+  sendDeadlineReminderEmail,
+  sendOverdueAlertEmail,
+  type DeadlineForEmail,
+} from '@/lib/services/email-service';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -359,6 +365,21 @@ export async function processAndSendNotifications(): Promise<SendResult> {
     byUser.get(dl.userId)!.push(dl);
   }
 
+  // Cache user email+name per userId to avoid repeated DB calls
+  const userCache = new Map<string, { email: string; firstName: string | null; name: string }>();
+
+  async function getUserInfo(userId: string) {
+    if (userCache.has(userId)) return userCache.get(userId)!;
+    const rows = await db
+      .select({ email: users.email, firstName: users.firstName, name: users.name })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+    const info = rows[0] ?? { email: '', firstName: null, name: '' };
+    userCache.set(userId, info);
+    return info;
+  }
+
   // Process per user
   for (const [userId, userDeadlines] of byUser) {
     // Group by company + urgency for batching
@@ -395,6 +416,31 @@ export async function processAndSendNotifications(): Promise<SendResult> {
         const pushResult = await sendPushToUser(userId, payload);
         result.sent += pushResult.sent;
         result.failed += pushResult.failed;
+      }
+
+      // Send email notification
+      if (channels.includes('email')) {
+        try {
+          const userInfo = await getUserInfo(userId);
+          if (userInfo.email) {
+            const rsppName = userInfo.firstName || userInfo.name || 'RSPP';
+            const emailDeadlines: DeadlineForEmail[] = group.map((dl) => ({
+              deadlineTypeName: dl.deadlineTypeName,
+              companyName: dl.companyName,
+              employeeName: dl.employeeName,
+              dueDate: dl.dueDate,
+              daysUntilDue: dl.daysUntilDue,
+            }));
+
+            if (urgency === 'overdue') {
+              await sendOverdueAlertEmail(userInfo.email, rsppName, companyName, emailDeadlines);
+            } else {
+              await sendDeadlineReminderEmail(userInfo.email, rsppName, companyName, emailDeadlines);
+            }
+          }
+        } catch (err) {
+          console.error('[Notification] Email send failed:', err instanceof Error ? err.message : err);
+        }
       }
 
       // Record notification in DB (in_app always)

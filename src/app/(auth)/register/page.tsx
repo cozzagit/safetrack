@@ -131,6 +131,18 @@ export default function RegisterPage() {
         return;
       }
 
+      // Send welcome email (fire-and-forget — don't block navigation on failure)
+      fetch("/api/auth/post-register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: form.email.trim().toLowerCase(),
+          firstName: form.firstName.trim(),
+        }),
+      }).catch(() => {
+        // Silently ignore — email is best-effort
+      });
+
       router.push("/dashboard");
     } catch {
       setErrors({ general: "Errore di connessione. Riprova più tardi." });
