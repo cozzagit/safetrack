@@ -144,6 +144,17 @@ export default function LoginPage() {
           {errors.password && <p className="error-message">{errors.password}</p>}
         </div>
 
+        {/* Forgot password */}
+        <div className="flex justify-end">
+          <Link
+            href="/reset-password"
+            className="text-sm font-medium"
+            style={{ color: "var(--color-primary)" }}
+          >
+            Password dimenticata?
+          </Link>
+        </div>
+
         {/* Submit */}
         <button
           type="submit"

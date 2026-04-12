@@ -11,11 +11,24 @@ import {
   CheckCircle2,
   ArrowRight,
   ChevronRight,
-  Star,
+  ChevronDown,
   Users,
-  TrendingUp,
   Zap,
+  FileText,
+  ClipboardCheck,
+  AlignLeft,
+  Upload,
+  MailWarning,
+  BarChart3,
+  Clock,
+  Smartphone,
+  Lock,
+  Server,
+  HelpCircle,
+  X,
+  Menu,
 } from "lucide-react";
+import { useState } from "react";
 
 /* ── Animation helpers ──────────────────────────────────── */
 const fadeUp = {
@@ -29,52 +42,122 @@ const staggerContainer = {
 };
 
 /* ── Data ───────────────────────────────────────────────── */
-const BENEFITS = [
+const PAIN_POINTS = [
+  {
+    emoji: "📊",
+    text: "Excel con 200 righe di scadenze e la paura di dimenticarne una?",
+  },
+  {
+    emoji: "📞",
+    text: "Il titolare ti chiama: \"L'ASL e qui, siamo in regola?\" E tu devi cercare tutto?",
+  },
+  {
+    emoji: "📋",
+    text: "Fine trimestre, 50 report da preparare a mano per i clienti?",
+  },
+] as const;
+
+const FEATURES = [
+  {
+    Icon: BarChart3,
+    title: "Dashboard intelligente",
+    description: "Apri l'app e sai subito cosa fare: scadenze urgenti, aziende critiche, piano del mese.",
+    colorVar: "--color-primary",
+    bgVar: "--color-primary-50",
+  },
   {
     Icon: Calendar,
-    title: "Scadenze automatiche",
-    description:
-      "Il sistema genera automaticamente tutte le scadenze previste dalla normativa D.Lgs. 81/08 per ogni azienda. Niente più fogli Excel, niente più dimenticanze.",
+    title: "58 scadenze normative preconfigurate",
+    description: "D.Lgs 81/08 completo: formazione, visite mediche, DVR, antincendio, DPI, RENTRI. Non devi configurare nulla.",
+    colorVar: "--color-accent",
+    bgVar: "--color-accent-50",
+  },
+  {
+    Icon: Zap,
+    title: "Generazione automatica scadenze",
+    description: "Aggiungi un dipendente con i suoi ruoli, il sistema genera tutte le scadenze obbligatorie. Anche i rinnovi.",
+    colorVar: "--color-warning",
+    bgVar: "--color-warning-50",
+  },
+  {
+    Icon: ClipboardCheck,
+    title: "Kit Ispezione ASL",
+    description: "L'ispettore si presenta? Un tocco e hai il fascicolo completo pronto da mostrare. Condividilo via WhatsApp in 10 secondi.",
     colorVar: "--color-primary",
     bgVar: "--color-primary-50",
   },
   {
     Icon: ScanLine,
-    title: "Scansione attestati AI",
-    description:
-      "Carica un attestato e l'intelligenza artificiale estrae automaticamente dati, date di scadenza e nominativi. Risparmia ore di inserimento manuale.",
+    title: "Scansione attestati con AI",
+    description: "Fotografa un attestato, l'AI estrae nome, corso, data. Tre secondi invece di cinque minuti di data entry.",
     colorVar: "--color-accent",
     bgVar: "--color-accent-50",
   },
   {
-    Icon: Bell,
-    title: "Notifiche intelligenti",
-    description:
-      "Ricevi notifiche push, email o SMS con 90, 30 e 7 giorni di anticipo. Configura avvisi per te e per i tuoi clienti. Zero sorprese.",
+    Icon: Clock,
+    title: "Allinea storico",
+    description: "Dipendente assunto 5 anni fa? Un click allinea tutte le scadenze passate fino ad oggi.",
     colorVar: "--color-warning",
     bgVar: "--color-warning-50",
+  },
+  {
+    Icon: Upload,
+    title: "Import da Excel",
+    description: "Hai 80 aziende in Excel? Carica il file, l'AI mappa le colonne, importa tutto in 5 minuti.",
+    colorVar: "--color-primary",
+    bgVar: "--color-primary-50",
+  },
+  {
+    Icon: MailWarning,
+    title: "Sollecito formale automatico",
+    description: "Genera lettere di sollecito con riferimenti di legge corretti. Tutela legale in 10 secondi.",
+    colorVar: "--color-accent",
+    bgVar: "--color-accent-50",
+  },
+  {
+    Icon: FileText,
+    title: "Report aziendali",
+    description: "Report PDF professionali per i tuoi clienti. Generali in batch per tutte le aziende.",
+    colorVar: "--color-warning",
+    bgVar: "--color-warning-50",
+  },
+  {
+    Icon: Bell,
+    title: "Notifiche intelligenti",
+    description: "60, 30, 14, 7 giorni prima della scadenza. Email + notifiche push. Non dimentichi piu nulla.",
+    colorVar: "--color-primary",
+    bgVar: "--color-primary-50",
   },
 ] as const;
 
 const HOW_IT_WORKS = [
   {
-    step: "01",
-    title: "Aggiungi le aziende",
-    description: "Inserisci i dati delle aziende clienti e i loro dipendenti. L'import da Excel rende il setup velocissimo.",
     Icon: Building2,
+    title: "Registrati e aggiungi le tue aziende clienti",
+    description: "Importa da Excel o inserisci manualmente. Il setup iniziale richiede pochi minuti.",
   },
   {
-    step: "02",
-    title: "Il sistema genera le scadenze",
-    description: "SafeTrack crea automaticamente il calendario scadenze basandosi su ruoli, mansioni e normativa vigente.",
-    Icon: TrendingUp,
+    Icon: Calendar,
+    title: "Il sistema genera automaticamente tutte le scadenze",
+    description: "58 tipologie normative preconfigurate. Ogni dipendente riceve le scadenze in base ai suoi ruoli.",
   },
   {
-    step: "03",
-    title: "Ricevi notifiche",
-    description: "Sei avvisato in anticipo su ogni scadenza imminente. Agisci prima che diventi un problema o una multa.",
     Icon: Bell,
+    title: "Ricevi notifiche, completa le scadenze, genera report",
+    description: "Notifiche automatiche, fascicoli pronti per l'ASL e report PDF per i tuoi clienti.",
   },
+] as const;
+
+const PRICING_FEATURES = [
+  "Aziende",
+  "Dipendenti",
+  "Scansione AI",
+  "Kit Ispezione ASL",
+  "Sollecito automatico",
+  "Import Excel",
+  "Report PDF",
+  "Notifiche push",
+  "Supporto",
 ] as const;
 
 const PRICING_PLANS = [
@@ -82,13 +165,8 @@ const PRICING_PLANS = [
     name: "Free",
     price: "€0",
     period: "per sempre",
-    description: "Per iniziare a capire il valore",
-    features: [
-      "1 azienda",
-      "Fino a 10 dipendenti",
-      "Scadenze automatiche",
-      "Dashboard base",
-    ],
+    description: "Per provare la piattaforma",
+    values: ["3", "15", "5/mese", false, false, false, "Base", true, "Community"],
     cta: "Inizia gratis",
     ctaHref: "/register",
     highlighted: false,
@@ -97,14 +175,8 @@ const PRICING_PLANS = [
     name: "Base",
     price: "€39",
     period: "/mese",
-    description: "Per consulenti RSPP freelance",
-    features: [
-      "Fino a 5 aziende",
-      "Dipendenti illimitati",
-      "Notifiche email + push",
-      "Scansione attestati AI",
-      "Esportazione PDF",
-    ],
+    description: "Per RSPP freelance",
+    values: ["20", "200", "50/mese", true, true, true, "Completo", true, "Email"],
     cta: "Prova 30 giorni gratis",
     ctaHref: "/register?plan=base",
     highlighted: false,
@@ -114,14 +186,7 @@ const PRICING_PLANS = [
     price: "€79",
     period: "/mese",
     description: "Per studi RSPP in crescita",
-    features: [
-      "Fino a 20 aziende",
-      "Dipendenti illimitati",
-      "Tutto di Base +",
-      "Notifiche SMS ai clienti",
-      "Report personalizzati",
-      "Supporto prioritario",
-    ],
+    values: ["80", "1.000", "200/mese", true, true, true, "Completo + batch", true, "Prioritario"],
     cta: "Prova 30 giorni gratis",
     ctaHref: "/register?plan=pro",
     highlighted: true,
@@ -130,44 +195,79 @@ const PRICING_PLANS = [
     name: "Studio",
     price: "€149",
     period: "/mese",
-    description: "Per studi con più consulenti",
-    features: [
-      "Aziende illimitate",
-      "Dipendenti illimitati",
-      "Tutto di Pro +",
-      "Multi-utente (5 seat)",
-      "White-label opzionale",
-      "Onboarding dedicato",
-    ],
-    cta: "Contattaci",
-    ctaHref: "/contatti",
+    description: "Per studi con piu consulenti",
+    values: ["Illimitate", "Illimitati", "Illimitate", true, true, true, "Completo + batch", true, "Dedicato"],
+    cta: "Prova 30 giorni gratis",
+    ctaHref: "/register?plan=studio",
     highlighted: false,
   },
 ] as const;
 
-const TESTIMONIALS = [
+const FAQ_ITEMS = [
   {
-    quote: "Da quando uso SafeTrack non ho più perso una scadenza. Gestisco 34 aziende da solo e tutto è sempre sotto controllo.",
-    name: "Marco Pellegrini",
-    role: "RSPP freelance, Milano",
-    initials: "MP",
+    q: "Posso importare i dati dal mio Excel attuale?",
+    a: "Si, SafeTrack supporta l'importazione da file Excel (.xlsx). Carica il file, l'AI mappa automaticamente le colonne ai campi corretti, e puoi importare aziende e dipendenti in pochi minuti. Supportiamo qualsiasi formato — non devi ristrutturare il tuo foglio.",
   },
   {
-    quote: "La scansione degli attestati mi ha fatto risparmiare ore ogni settimana. Uno strumento indispensabile per il nostro studio.",
-    name: "Laura Conti",
-    role: "Studio Sicurezza Conti, Roma",
-    initials: "LC",
+    q: "I dati sono al sicuro?",
+    a: "Assolutamente si. I dati sono crittografati in transito (TLS) e a riposo. I server sono situati nell'Unione Europea. SafeTrack e conforme al GDPR e tratta i dati sanitari (visite mediche) secondo le basi giuridiche previste dal D.Lgs. 81/08. Non vendiamo ne condividiamo mai i tuoi dati con terze parti per finalita di marketing.",
   },
   {
-    quote: "Finalmente uno strumento pensato per chi fa questo lavoro davvero. Le notifiche automatiche ai clienti sono una svolta.",
-    name: "Stefano Ricci",
-    role: "Consulente RSPP, Torino",
-    initials: "SR",
+    q: "Posso usarlo dal telefono?",
+    a: "Si, SafeTrack e una Progressive Web App (PWA) ottimizzata per dispositivi mobili. Puoi installarla sulla schermata home del tuo smartphone e usarla come un'app nativa, con notifiche push incluse. Funziona anche offline per la consultazione dei dati.",
+  },
+  {
+    q: "Cosa succede alla fine della prova gratuita?",
+    a: "Al termine dei 30 giorni di prova, puoi scegliere di passare a un piano a pagamento oppure continuare con il piano Free (3 aziende, 15 dipendenti). Non chiediamo la carta di credito alla registrazione e non addebitiamo nulla automaticamente. I tuoi dati restano al sicuro.",
+  },
+  {
+    q: "SafeTrack sostituisce il mio lavoro di RSPP?",
+    a: "No. SafeTrack e uno strumento di supporto organizzativo che ti aiuta a gestire scadenze e documentazione in modo efficiente. La competenza professionale, il giudizio tecnico e la responsabilita restano interamente del consulente RSPP. SafeTrack ti fa risparmiare tempo, non sostituisce la tua professionalita.",
+  },
+  {
+    q: "Come funziona la scansione AI degli attestati?",
+    a: "Scatta una foto o carica l'immagine di un attestato di formazione. L'intelligenza artificiale (OCR avanzato) estrae automaticamente il nome del partecipante, il tipo di corso, la data di svolgimento e l'ente formatore. Tu verifichi i dati e confermi con un tocco. Il processo richiede circa 3 secondi.",
   },
 ] as const;
 
+/* ── FAQ Accordion Item ─────────────────────────────────── */
+function FAQItem({ q, a }: { q: string; a: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div
+      className="rounded-lg overflow-hidden"
+      style={{
+        backgroundColor: "var(--color-surface)",
+        border: "1px solid var(--color-border)",
+      }}
+    >
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between p-5 text-left gap-4"
+        style={{ color: "var(--color-text-primary)" }}
+      >
+        <span className="font-semibold text-sm md:text-base">{q}</span>
+        <ChevronDown
+          className={`w-5 h-5 flex-shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
+          style={{ color: "var(--color-text-muted)" }}
+        />
+      </button>
+      {isOpen && (
+        <div
+          className="px-5 pb-5 text-sm leading-relaxed"
+          style={{ color: "var(--color-text-secondary)" }}
+        >
+          {a}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── Component ──────────────────────────────────────────── */
 export default function LandingPage() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div
       className="min-h-screen flex flex-col"
@@ -178,7 +278,7 @@ export default function LandingPage() {
         className="sticky top-0 z-50"
         style={{
           backgroundColor: "rgba(255,255,255,0.92)",
-          borderBottom: `1px solid var(--color-border)`,
+          borderBottom: "1px solid var(--color-border)",
           backdropFilter: "blur(12px)",
         }}
       >
@@ -201,9 +301,10 @@ export default function LandingPage() {
 
           {/* Nav links — desktop */}
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>
+            <a href="#funzionalita" className="hover:text-[var(--color-primary)] transition-colors">Funzionalita</a>
             <a href="#come-funziona" className="hover:text-[var(--color-primary)] transition-colors">Come funziona</a>
             <a href="#prezzi" className="hover:text-[var(--color-primary)] transition-colors">Prezzi</a>
-            <Link href="/login" className="hover:text-[var(--color-primary)] transition-colors">Accedi</Link>
+            <a href="#faq" className="hover:text-[var(--color-primary)] transition-colors">FAQ</a>
           </nav>
 
           {/* CTA */}
@@ -211,12 +312,38 @@ export default function LandingPage() {
             <Link href="/login" className="hidden md:block btn-secondary py-2 px-4 text-sm">
               Accedi
             </Link>
-            <Link href="/register" className="btn-primary py-2 px-4 text-sm">
+            <Link href="/register" className="hidden md:flex btn-primary py-2 px-4 text-sm">
               Prova gratis
               <ChevronRight className="w-4 h-4" />
             </Link>
+            {/* Mobile hamburger */}
+            <button
+              className="md:hidden p-2 rounded-lg"
+              style={{ color: "var(--color-text-secondary)" }}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Menu"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
           </div>
         </div>
+
+        {/* Mobile menu */}
+        {mobileMenuOpen && (
+          <div
+            className="md:hidden px-4 pb-4 space-y-2"
+            style={{ backgroundColor: "var(--color-surface)", borderTop: "1px solid var(--color-border)" }}
+          >
+            <a href="#funzionalita" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>Funzionalita</a>
+            <a href="#come-funziona" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>Come funziona</a>
+            <a href="#prezzi" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>Prezzi</a>
+            <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>FAQ</a>
+            <div className="flex gap-3 pt-2">
+              <Link href="/login" className="btn-secondary py-2 px-4 text-sm flex-1 text-center">Accedi</Link>
+              <Link href="/register" className="btn-primary py-2 px-4 text-sm flex-1 text-center">Prova gratis</Link>
+            </div>
+          </div>
+        )}
       </header>
 
       <main className="flex-1">
@@ -224,22 +351,13 @@ export default function LandingPage() {
         <section
           className="relative overflow-hidden"
           style={{
-            background: `linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 50%, #1a4a7a 100%)`,
+            background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 50%, #1a4a7a 100%)",
           }}
         >
-          {/* Background decoration */}
           <div
             className="absolute inset-0 pointer-events-none"
             style={{
-              background:
-                "radial-gradient(ellipse 80% 60% at 50% -20%, rgba(5,150,105,0.25) 0%, transparent 60%)",
-            }}
-          />
-          <div
-            className="absolute top-0 right-0 w-1/2 h-full pointer-events-none"
-            style={{
-              background:
-                "radial-gradient(ellipse 60% 80% at 100% 50%, rgba(255,255,255,0.04) 0%, transparent 60%)",
+              background: "radial-gradient(ellipse 80% 60% at 50% -20%, rgba(5,150,105,0.25) 0%, transparent 60%)",
             }}
           />
 
@@ -250,38 +368,41 @@ export default function LandingPage() {
               animate="visible"
               className="max-w-3xl"
             >
-              {/* Badge */}
-              <motion.div variants={fadeUp} className="mb-6">
-                <span
-                  className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-semibold"
-                  style={{
-                    backgroundColor: "rgba(255,255,255,0.12)",
-                    color: "white",
-                    border: "1px solid rgba(255,255,255,0.2)",
-                  }}
-                >
-                  <Zap className="w-3.5 h-3.5" style={{ color: "var(--color-accent-light)" }} />
-                  Nuovo: Scansione attestati con AI
-                </span>
+              {/* Trust badges */}
+              <motion.div variants={fadeUp} className="mb-6 flex flex-wrap gap-3">
+                {["GDPR Compliant", "D.Lgs 81/08", "Dati in Italia"].map((badge) => (
+                  <span
+                    key={badge}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold"
+                    style={{
+                      backgroundColor: "rgba(255,255,255,0.12)",
+                      color: "white",
+                      border: "1px solid rgba(255,255,255,0.2)",
+                    }}
+                  >
+                    <ShieldCheck className="w-3 h-3" style={{ color: "#6ee7b7" }} />
+                    {badge}
+                  </span>
+                ))}
               </motion.div>
 
               {/* Headline */}
               <motion.h1
                 variants={fadeUp}
-                className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-white"
+                className="text-3xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight text-white"
               >
-                Non perdere mai più
+                La sicurezza sul lavoro,
                 <br />
-                <span style={{ color: "#6ee7b7" }}>una scadenza.</span>
+                <span style={{ color: "#6ee7b7" }}>finalmente sotto controllo.</span>
               </motion.h1>
 
               <motion.p
                 variants={fadeUp}
-                className="mt-6 text-lg md:text-xl leading-relaxed max-w-2xl"
+                className="mt-6 text-base md:text-xl leading-relaxed max-w-2xl"
                 style={{ color: "rgba(255,255,255,0.78)" }}
               >
-                SafeTrack è la piattaforma professionale per consulenti RSPP. Gestisci scadenze,
-                attestati e adempimenti D.Lgs. 81/08 di tutte le tue aziende clienti da un unico pannello.
+                SafeTrack e la piattaforma che ogni RSPP desidera. Gestisci scadenze, dipendenti e
+                documentazione per tutti i tuoi clienti in un unico posto intelligente.
               </motion.p>
 
               {/* CTAs */}
@@ -292,24 +413,15 @@ export default function LandingPage() {
                 <Link
                   href="/register"
                   className="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg font-bold text-base transition-all"
-                  style={{
-                    backgroundColor: "var(--color-accent)",
-                    color: "white",
-                  }}
-                  onMouseEnter={(e) =>
-                    ((e.currentTarget as HTMLElement).style.backgroundColor =
-                      "var(--color-accent-dark)")
-                  }
-                  onMouseLeave={(e) =>
-                    ((e.currentTarget as HTMLElement).style.backgroundColor =
-                      "var(--color-accent)")
-                  }
+                  style={{ backgroundColor: "var(--color-accent)", color: "white" }}
+                  onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--color-accent-dark)")}
+                  onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.backgroundColor = "var(--color-accent)")}
                 >
-                  Prova gratis 30 giorni
+                  Inizia gratis — 30 giorni di prova
                   <ArrowRight className="w-5 h-5" />
                 </Link>
                 <a
-                  href="#come-funziona"
+                  href="#funzionalita"
                   className="text-base font-medium flex items-center gap-2"
                   style={{ color: "rgba(255,255,255,0.75)" }}
                 >
@@ -318,36 +430,76 @@ export default function LandingPage() {
                 </a>
               </motion.div>
 
-              {/* Social proof micro */}
-              <motion.div
+              {/* No credit card */}
+              <motion.p
                 variants={fadeUp}
-                className="mt-10 flex items-center gap-4"
+                className="mt-4 text-sm"
+                style={{ color: "rgba(255,255,255,0.5)" }}
               >
-                <div className="flex -space-x-2">
-                  {["MP", "LC", "SR", "AB"].map((initials) => (
-                    <div
-                      key={initials}
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2"
-                      style={{
-                        backgroundColor: "var(--color-accent)",
-                        color: "white",
-                        borderColor: "var(--color-primary)",
-                      }}
-                    >
-                      {initials}
-                    </div>
-                  ))}
-                </div>
-                <p className="text-sm" style={{ color: "rgba(255,255,255,0.65)" }}>
-                  <strong className="text-white">240+ consulenti RSPP</strong> già usano SafeTrack
-                </p>
-              </motion.div>
+                Nessuna carta di credito richiesta
+              </motion.p>
             </motion.div>
           </div>
         </section>
 
-        {/* ── BENEFITS ──────────────────────────────────────── */}
-        <section className="py-20 md:py-24">
+        {/* ── PAIN POINTS ──────────────────────────────────── */}
+        <section className="py-16 md:py-20">
+          <div className="max-w-7xl mx-auto px-4 md:px-6">
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-80px" }}
+              className="text-center mb-12"
+            >
+              <motion.p
+                variants={fadeUp}
+                className="text-sm font-semibold uppercase tracking-widest mb-3"
+                style={{ color: "var(--color-accent)" }}
+              >
+                Ti riconosci?
+              </motion.p>
+              <motion.h2
+                variants={fadeUp}
+                className="text-2xl md:text-3xl font-extrabold tracking-tight"
+                style={{ color: "var(--color-text-primary)" }}
+              >
+                I problemi che SafeTrack risolve
+              </motion.h2>
+            </motion.div>
+
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-60px" }}
+              className="grid md:grid-cols-3 gap-6"
+            >
+              {PAIN_POINTS.map(({ emoji, text }) => (
+                <motion.div
+                  key={text}
+                  variants={fadeUp}
+                  className="card card-hover p-6 text-center"
+                >
+                  <div className="text-4xl mb-4">{emoji}</div>
+                  <p
+                    className="text-sm md:text-base font-medium leading-relaxed"
+                    style={{ color: "var(--color-text-secondary)" }}
+                  >
+                    {text}
+                  </p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ── FEATURES ─────────────────────────────────────── */}
+        <section
+          id="funzionalita"
+          className="py-20 md:py-24"
+          style={{ backgroundColor: "var(--color-surface)" }}
+        >
           <div className="max-w-7xl mx-auto px-4 md:px-6">
             <motion.div
               variants={staggerContainer}
@@ -361,22 +513,21 @@ export default function LandingPage() {
                 className="text-sm font-semibold uppercase tracking-widest mb-3"
                 style={{ color: "var(--color-accent)" }}
               >
-                Perché SafeTrack
+                Funzionalita
               </motion.p>
               <motion.h2
                 variants={fadeUp}
-                className="text-3xl md:text-4xl font-extrabold tracking-tight"
+                className="text-2xl md:text-4xl font-extrabold tracking-tight"
                 style={{ color: "var(--color-text-primary)" }}
               >
-                La sicurezza sul lavoro sotto controllo
+                Cosa fa SafeTrack per te
               </motion.h2>
               <motion.p
                 variants={fadeUp}
-                className="mt-4 text-lg max-w-2xl mx-auto"
+                className="mt-4 text-base max-w-2xl mx-auto"
                 style={{ color: "var(--color-text-secondary)" }}
               >
-                Progettato da chi conosce il lavoro del consulente RSPP. Non è un semplice reminder,
-                è un sistema professionale.
+                Ogni funzionalita risolve un problema reale del tuo lavoro quotidiano.
               </motion.p>
             </motion.div>
 
@@ -385,22 +536,23 @@ export default function LandingPage() {
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-60px" }}
-              className="grid md:grid-cols-3 gap-8"
+              className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
             >
-              {BENEFITS.map(({ Icon, title, description, colorVar, bgVar }) => (
+              {FEATURES.map(({ Icon, title, description, colorVar, bgVar }) => (
                 <motion.div
                   key={title}
                   variants={fadeUp}
-                  className="card card-hover p-7"
+                  className="card card-hover p-6"
+                  style={{ backgroundColor: "var(--color-background)" }}
                 >
                   <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-5"
+                    className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
                     style={{ backgroundColor: `var(${bgVar})` }}
                   >
-                    <Icon className="w-6 h-6" style={{ color: `var(${colorVar})` }} />
+                    <Icon className="w-5 h-5" style={{ color: `var(${colorVar})` }} />
                   </div>
                   <h3
-                    className="text-lg font-bold mb-3"
+                    className="text-base font-bold mb-2"
                     style={{ color: "var(--color-text-primary)" }}
                   >
                     {title}
@@ -440,10 +592,10 @@ export default function LandingPage() {
               </motion.p>
               <motion.h2
                 variants={fadeUp}
-                className="text-3xl md:text-4xl font-extrabold tracking-tight"
+                className="text-2xl md:text-4xl font-extrabold tracking-tight"
                 style={{ color: "var(--color-text-primary)" }}
               >
-                Operativo in meno di 15 minuti
+                Operativo in 3 semplici passi
               </motion.h2>
             </motion.div>
 
@@ -460,9 +612,9 @@ export default function LandingPage() {
                 style={{ backgroundColor: "var(--color-border)" }}
               />
 
-              {HOW_IT_WORKS.map(({ step, title, description, Icon }, index) => (
+              {HOW_IT_WORKS.map(({ title, description, Icon }, index) => (
                 <motion.div
-                  key={step}
+                  key={title}
                   variants={fadeUp}
                   className="text-center relative"
                 >
@@ -471,7 +623,7 @@ export default function LandingPage() {
                       className="w-20 h-20 rounded-2xl flex items-center justify-center"
                       style={{
                         backgroundColor: "var(--color-surface)",
-                        border: `2px solid var(--color-border)`,
+                        border: "2px solid var(--color-border)",
                         boxShadow: "var(--shadow-md)",
                       }}
                     >
@@ -485,7 +637,7 @@ export default function LandingPage() {
                     </span>
                   </div>
                   <h3
-                    className="text-lg font-bold mb-3"
+                    className="text-base md:text-lg font-bold mb-3"
                     style={{ color: "var(--color-text-primary)" }}
                   >
                     {title}
@@ -502,88 +654,11 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* ── TESTIMONIALS ─────────────────────────────────── */}
-        <section className="py-20 md:py-24">
-          <div className="max-w-7xl mx-auto px-4 md:px-6">
-            <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: "-80px" }}
-            >
-              <motion.div variants={fadeUp} className="text-center mb-14">
-                <div className="flex justify-center gap-1 mb-4">
-                  {[1, 2, 3, 4, 5].map((s) => (
-                    <Star key={s} className="w-5 h-5 fill-current" style={{ color: "#fbbf24" }} />
-                  ))}
-                </div>
-                <h2
-                  className="text-3xl md:text-4xl font-extrabold tracking-tight"
-                  style={{ color: "var(--color-text-primary)" }}
-                >
-                  Cosa dicono i consulenti
-                </h2>
-                <p
-                  className="mt-3 text-base"
-                  style={{ color: "var(--color-text-secondary)" }}
-                >
-                  Usato da <strong>240+ professionisti RSPP</strong> in tutta Italia
-                </p>
-              </motion.div>
-
-              <div className="grid md:grid-cols-3 gap-6">
-                {TESTIMONIALS.map(({ quote, name, role, initials }) => (
-                  <motion.div
-                    key={name}
-                    variants={fadeUp}
-                    className="card p-6"
-                  >
-                    <div className="flex gap-1 mb-4">
-                      {[1, 2, 3, 4, 5].map((s) => (
-                        <Star
-                          key={s}
-                          className="w-4 h-4 fill-current"
-                          style={{ color: "#fbbf24" }}
-                        />
-                      ))}
-                    </div>
-                    <p
-                      className="text-sm leading-relaxed mb-5 italic"
-                      style={{ color: "var(--color-text-secondary)" }}
-                    >
-                      &ldquo;{quote}&rdquo;
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-                        style={{
-                          backgroundColor: "var(--color-primary)",
-                          color: "white",
-                        }}
-                      >
-                        {initials}
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold" style={{ color: "var(--color-text-primary)" }}>
-                          {name}
-                        </p>
-                        <p className="text-xs" style={{ color: "var(--color-text-muted)" }}>
-                          {role}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
         {/* ── PRICING ───────────────────────────────────────── */}
         <section
           id="prezzi"
           className="py-20 md:py-28"
-          style={{ backgroundColor: "var(--color-surface)" }}
+          style={{ backgroundColor: "var(--color-background)" }}
         >
           <div className="max-w-7xl mx-auto px-4 md:px-6">
             <motion.div
@@ -602,7 +677,7 @@ export default function LandingPage() {
               </motion.p>
               <motion.h2
                 variants={fadeUp}
-                className="text-3xl md:text-4xl font-extrabold tracking-tight"
+                className="text-2xl md:text-4xl font-extrabold tracking-tight"
                 style={{ color: "var(--color-text-primary)" }}
               >
                 Semplice, trasparente, senza sorprese
@@ -616,103 +691,163 @@ export default function LandingPage() {
               </motion.p>
             </motion.div>
 
+            {/* Mobile: scrollable pricing cards */}
+            <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 pb-4">
+              <motion.div
+                variants={staggerContainer}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-60px" }}
+                className="grid grid-cols-[repeat(4,280px)] md:grid-cols-4 gap-6 min-w-0 md:min-w-0"
+                style={{ width: "fit-content" }}
+              >
+                {PRICING_PLANS.map(({ name, price, period, description, values, cta, ctaHref, highlighted }) => (
+                  <motion.div
+                    key={name}
+                    variants={fadeUp}
+                    className={`relative rounded-xl p-6 flex flex-col ${highlighted ? "ring-2" : "card"}`}
+                    style={
+                      highlighted
+                        ? {
+                            backgroundColor: "var(--color-primary)",
+                            boxShadow: "0 0 0 2px var(--color-primary), var(--shadow-xl)",
+                          }
+                        : { minWidth: 260 }
+                    }
+                  >
+                    {highlighted && (
+                      <span
+                        className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white whitespace-nowrap"
+                        style={{ backgroundColor: "var(--color-accent)" }}
+                      >
+                        Piu popolare
+                      </span>
+                    )}
+
+                    <div className="mb-5">
+                      <h3
+                        className="font-bold text-base mb-1"
+                        style={{ color: highlighted ? "rgba(255,255,255,0.7)" : "var(--color-text-secondary)" }}
+                      >
+                        {name}
+                      </h3>
+                      <div className="flex items-baseline gap-1">
+                        <span
+                          className="text-4xl font-extrabold tracking-tight"
+                          style={{ color: highlighted ? "white" : "var(--color-text-primary)" }}
+                        >
+                          {price}
+                        </span>
+                        <span
+                          className="text-sm"
+                          style={{ color: highlighted ? "rgba(255,255,255,0.55)" : "var(--color-text-muted)" }}
+                        >
+                          {period}
+                        </span>
+                      </div>
+                      <p
+                        className="text-xs mt-2"
+                        style={{ color: highlighted ? "rgba(255,255,255,0.6)" : "var(--color-text-muted)" }}
+                      >
+                        {description}
+                      </p>
+                    </div>
+
+                    <ul className="space-y-2.5 mb-7 flex-1">
+                      {PRICING_FEATURES.map((feature, i) => {
+                        const value = values[i];
+                        const isBoolean = typeof value === "boolean";
+                        if (isBoolean && !value) {
+                          return (
+                            <li key={feature} className="flex items-start gap-2.5">
+                              <X
+                                className="w-4 h-4 flex-shrink-0 mt-0.5"
+                                style={{ color: highlighted ? "rgba(255,255,255,0.3)" : "var(--color-text-muted)" }}
+                              />
+                              <span
+                                className="text-sm"
+                                style={{ color: highlighted ? "rgba(255,255,255,0.4)" : "var(--color-text-muted)" }}
+                              >
+                                {feature}
+                              </span>
+                            </li>
+                          );
+                        }
+                        return (
+                          <li key={feature} className="flex items-start gap-2.5">
+                            <CheckCircle2
+                              className="w-4 h-4 flex-shrink-0 mt-0.5"
+                              style={{ color: highlighted ? "var(--color-accent-light)" : "var(--color-accent)" }}
+                            />
+                            <span
+                              className="text-sm"
+                              style={{ color: highlighted ? "rgba(255,255,255,0.85)" : "var(--color-text-secondary)" }}
+                            >
+                              {feature}: <strong>{isBoolean ? "Si" : value}</strong>
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+
+                    <Link
+                      href={ctaHref}
+                      className="block w-full text-center py-3 px-4 rounded-lg font-semibold text-sm transition-all"
+                      style={
+                        highlighted
+                          ? { backgroundColor: "white", color: "var(--color-primary)" }
+                          : { backgroundColor: "var(--color-primary-50)", color: "var(--color-primary)" }
+                      }
+                    >
+                      {cta}
+                    </Link>
+                  </motion.div>
+                ))}
+              </motion.div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── FAQ ───────────────────────────────────────────── */}
+        <section
+          id="faq"
+          className="py-20 md:py-24"
+          style={{ backgroundColor: "var(--color-surface)" }}
+        >
+          <div className="max-w-3xl mx-auto px-4 md:px-6">
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-80px" }}
+              className="text-center mb-12"
+            >
+              <motion.p
+                variants={fadeUp}
+                className="text-sm font-semibold uppercase tracking-widest mb-3"
+                style={{ color: "var(--color-accent)" }}
+              >
+                Domande frequenti
+              </motion.p>
+              <motion.h2
+                variants={fadeUp}
+                className="text-2xl md:text-4xl font-extrabold tracking-tight"
+                style={{ color: "var(--color-text-primary)" }}
+              >
+                Hai domande? Abbiamo le risposte.
+              </motion.h2>
+            </motion.div>
+
             <motion.div
               variants={staggerContainer}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, margin: "-60px" }}
-              className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6"
+              className="space-y-3"
             >
-              {PRICING_PLANS.map(({ name, price, period, description, features, cta, ctaHref, highlighted }) => (
-                <motion.div
-                  key={name}
-                  variants={fadeUp}
-                  className={`relative rounded-xl p-6 flex flex-col ${highlighted ? "ring-2" : "card"}`}
-                  style={
-                    highlighted
-                      ? {
-                          backgroundColor: "var(--color-primary)",
-                          boxShadow: "var(--shadow-xl)",
-                        }
-                      : {}
-                  }
-                >
-                  {highlighted && (
-                    <span
-                      className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white"
-                      style={{ backgroundColor: "var(--color-accent)" }}
-                    >
-                      Più scelto
-                    </span>
-                  )}
-
-                  <div className="mb-5">
-                    <h3
-                      className="font-bold text-base mb-1"
-                      style={{ color: highlighted ? "rgba(255,255,255,0.7)" : "var(--color-text-secondary)" }}
-                    >
-                      {name}
-                    </h3>
-                    <div className="flex items-baseline gap-1">
-                      <span
-                        className="text-4xl font-extrabold tracking-tight"
-                        style={{ color: highlighted ? "white" : "var(--color-text-primary)" }}
-                      >
-                        {price}
-                      </span>
-                      <span
-                        className="text-sm"
-                        style={{ color: highlighted ? "rgba(255,255,255,0.55)" : "var(--color-text-muted)" }}
-                      >
-                        {period}
-                      </span>
-                    </div>
-                    <p
-                      className="text-xs mt-2"
-                      style={{ color: highlighted ? "rgba(255,255,255,0.6)" : "var(--color-text-muted)" }}
-                    >
-                      {description}
-                    </p>
-                  </div>
-
-                  <ul className="space-y-2.5 mb-7 flex-1">
-                    {features.map((feature) => (
-                      <li key={feature} className="flex items-start gap-2.5">
-                        <CheckCircle2
-                          className="w-4 h-4 flex-shrink-0 mt-0.5"
-                          style={{
-                            color: highlighted ? "var(--color-accent-light)" : "var(--color-accent)",
-                          }}
-                        />
-                        <span
-                          className="text-sm"
-                          style={{
-                            color: highlighted ? "rgba(255,255,255,0.85)" : "var(--color-text-secondary)",
-                          }}
-                        >
-                          {feature}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <Link
-                    href={ctaHref}
-                    className={`block w-full text-center py-3 px-4 rounded-lg font-semibold text-sm transition-all`}
-                    style={
-                      highlighted
-                        ? {
-                            backgroundColor: "white",
-                            color: "var(--color-primary)",
-                          }
-                        : {
-                            backgroundColor: "var(--color-primary-50)",
-                            color: "var(--color-primary)",
-                          }
-                    }
-                  >
-                    {cta}
-                  </Link>
+              {FAQ_ITEMS.map(({ q, a }) => (
+                <motion.div key={q} variants={fadeUp}>
+                  <FAQItem q={q} a={a} />
                 </motion.div>
               ))}
             </motion.div>
@@ -723,7 +858,7 @@ export default function LandingPage() {
         <section
           className="py-20 md:py-24"
           style={{
-            background: `linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%)`,
+            background: "linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%)",
           }}
         >
           <div className="max-w-4xl mx-auto px-4 md:px-6 text-center">
@@ -742,39 +877,29 @@ export default function LandingPage() {
               </motion.div>
               <motion.h2
                 variants={fadeUp}
-                className="text-3xl md:text-4xl font-extrabold text-white tracking-tight"
+                className="text-2xl md:text-4xl font-extrabold text-white tracking-tight"
               >
-                Inizia oggi, gratis.
+                Prova SafeTrack gratis per 30 giorni
               </motion.h2>
               <motion.p
                 variants={fadeUp}
-                className="mt-4 text-lg"
+                className="mt-4 text-base md:text-lg"
                 style={{ color: "rgba(255,255,255,0.72)" }}
               >
-                30 giorni di prova completa. Nessuna carta di credito. Cancellazione in un click.
+                Nessuna carta di credito richiesta. Cancellazione in un click.
               </motion.p>
               <motion.div
                 variants={fadeUp}
-                className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4"
+                className="mt-8"
               >
                 <Link
                   href="/register"
                   className="inline-flex items-center gap-2 px-8 py-4 rounded-lg font-bold text-base transition-all"
-                  style={{
-                    backgroundColor: "var(--color-accent)",
-                    color: "white",
-                  }}
+                  style={{ backgroundColor: "var(--color-accent)", color: "white" }}
                 >
-                  Prova SafeTrack gratis
+                  Inizia gratis ora
                   <ArrowRight className="w-5 h-5" />
                 </Link>
-                <div
-                  className="flex items-center gap-2 text-sm"
-                  style={{ color: "rgba(255,255,255,0.6)" }}
-                >
-                  <Users className="w-4 h-4" />
-                  <span>240+ consulenti già a bordo</span>
-                </div>
               </motion.div>
             </motion.div>
           </div>
@@ -801,14 +926,18 @@ export default function LandingPage() {
               <p className="text-sm leading-relaxed">
                 La piattaforma professionale per la gestione della sicurezza sul lavoro.
               </p>
+              <p className="text-xs mt-3" style={{ color: "rgba(255,255,255,0.4)" }}>
+                Un prodotto VibeCanyon
+              </p>
             </div>
 
             {/* Product */}
             <div>
               <h4 className="text-sm font-semibold text-white mb-4">Prodotto</h4>
               <ul className="space-y-2.5 text-sm">
-                <li><a href="#come-funziona" className="hover:text-white transition-colors">Come funziona</a></li>
+                <li><a href="#funzionalita" className="hover:text-white transition-colors">Funzionalita</a></li>
                 <li><a href="#prezzi" className="hover:text-white transition-colors">Prezzi</a></li>
+                <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
                 <li><Link href="/register" className="hover:text-white transition-colors">Prova gratis</Link></li>
               </ul>
             </div>
@@ -823,13 +952,15 @@ export default function LandingPage() {
               </ul>
             </div>
 
-            {/* Support */}
+            {/* Contact */}
             <div>
-              <h4 className="text-sm font-semibold text-white mb-4">Supporto</h4>
+              <h4 className="text-sm font-semibold text-white mb-4">Contatti</h4>
               <ul className="space-y-2.5 text-sm">
-                <li><Link href="/contatti" className="hover:text-white transition-colors">Contattaci</Link></li>
-                <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
-                <li><Link href="/docs" className="hover:text-white transition-colors">Documentazione</Link></li>
+                <li>
+                  <a href="mailto:info@vibecanyon.com" className="hover:text-white transition-colors">
+                    info@vibecanyon.com
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
