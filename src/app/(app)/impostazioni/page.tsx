@@ -4,7 +4,7 @@ export default function ImpostazioniPage() {
       <div className="text-4xl mb-4">⚙️</div>
       <h1 className="text-xl font-bold mb-2">Impostazioni</h1>
       <p style={{ color: "var(--color-text-secondary)" }}>
-        Questa funzionalita sara disponibile a breve.
+        Questa funzionalità sarà disponibile a breve.
       </p>
     </div>
   );

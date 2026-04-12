@@ -65,7 +65,7 @@ export default function PrivacyPage() {
               1. Titolare del trattamento
             </h2>
             <p>
-              Il Titolare del trattamento dei dati personali e:
+              Il Titolare del trattamento dei dati personali è:
             </p>
             <div className="mt-3 p-4 rounded-lg" style={{ backgroundColor: "var(--color-surface)", border: "1px solid var(--color-border)" }}>
               <p className="font-semibold" style={{ color: "var(--color-text-primary)" }}>VibeCanyon</p>
@@ -103,7 +103,7 @@ export default function PrivacyPage() {
             <ul className="list-disc pl-5 space-y-1">
               <li>Ragione sociale, partita IVA, codice fiscale</li>
               <li>Indirizzo della sede legale e operativa</li>
-              <li>Settore di attivita e codice ATECO</li>
+              <li>Settore di attività e codice ATECO</li>
               <li>Dati del datore di lavoro e dei referenti aziendali</li>
             </ul>
 
@@ -130,8 +130,8 @@ export default function PrivacyPage() {
                 2.4 Dati particolari (art. 9 GDPR) — Dati sanitari
               </h3>
               <p style={{ color: "var(--color-text-primary)" }}>
-                SafeTrack puo trattare dati relativi alle <strong>visite mediche di sorveglianza sanitaria</strong>{" "}
-                (date delle visite, esiti di idoneita, limitazioni/prescrizioni, scadenze), che costituiscono{" "}
+                SafeTrack può trattare dati relativi alle <strong>visite mediche di sorveglianza sanitaria</strong>{" "}
+                (date delle visite, esiti di idoneità, limitazioni/prescrizioni, scadenze), che costituiscono{" "}
                 <strong>dati particolari (categorie particolari di dati personali)</strong> ai sensi dell&apos;art. 9 del GDPR.
               </p>
               <p className="mt-2" style={{ color: "var(--color-text-primary)" }}>
@@ -157,9 +157,9 @@ export default function PrivacyPage() {
           {/* 3 */}
           <section>
             <h2 className="text-lg font-bold mb-3" style={{ color: "var(--color-text-primary)" }}>
-              3. Finalita del trattamento
+              3. Finalità del trattamento
             </h2>
-            <p>I dati personali sono trattati per le seguenti finalita:</p>
+            <p>I dati personali sono trattati per le seguenti finalità:</p>
             <ul className="list-disc pl-5 mt-3 space-y-2">
               <li>
                 <strong>Erogazione del Servizio:</strong> gestione dell&apos;account, calcolo delle scadenze normative,
@@ -175,11 +175,11 @@ export default function PrivacyPage() {
               </li>
               <li>
                 <strong>Miglioramento del Servizio:</strong> analisi aggregate e anonimizzate sull&apos;utilizzo
-                della Piattaforma per migliorare funzionalita e prestazioni.
+                della Piattaforma per migliorare funzionalità e prestazioni.
               </li>
               <li>
                 <strong>Adempimenti legali:</strong> ottemperanza ad obblighi di legge, regolamentari o derivanti
-                da provvedimenti dell&apos;autorita competente.
+                da provvedimenti dell&apos;autorità competente.
               </li>
             </ul>
           </section>
@@ -193,7 +193,7 @@ export default function PrivacyPage() {
               <table className="w-full mt-3 text-sm" style={{ borderCollapse: "collapse" }}>
                 <thead>
                   <tr style={{ borderBottom: "2px solid var(--color-border)" }}>
-                    <th className="text-left py-3 pr-4 font-semibold" style={{ color: "var(--color-text-primary)" }}>Finalita</th>
+                    <th className="text-left py-3 pr-4 font-semibold" style={{ color: "var(--color-text-primary)" }}>Finalità</th>
                     <th className="text-left py-3 font-semibold" style={{ color: "var(--color-text-primary)" }}>Base giuridica (art. 6 GDPR)</th>
                   </tr>
                 </thead>
@@ -242,10 +242,10 @@ export default function PrivacyPage() {
                 Dopo la cessazione, cancellati entro 90 giorni salvo obblighi di legge.
               </li>
               <li>
-                <strong>Dati di fatturazione:</strong> conservati per 10 anni in conformita alla normativa fiscale italiana.
+                <strong>Dati di fatturazione:</strong> conservati per 10 anni in conformità alla normativa fiscale italiana.
               </li>
               <li>
-                <strong>Log di accesso:</strong> conservati per 6 mesi per finalita di sicurezza.
+                <strong>Log di accesso:</strong> conservati per 6 mesi per finalità di sicurezza.
               </li>
             </ul>
           </section>
@@ -262,9 +262,9 @@ export default function PrivacyPage() {
                 (server situati nell&apos;Unione Europea).
               </li>
               <li>
-                <strong>OpenAI (tramite API):</strong> esclusivamente per la funzionalita di scansione OCR degli
+                <strong>OpenAI (tramite API):</strong> esclusivamente per la funzionalità di scansione OCR degli
                 attestati. I dati inviati sono limitati all&apos;immagine del documento e vengono elaborati in
-                tempo reale senza conservazione permanente da parte di OpenAI, in conformita al loro{" "}
+                tempo reale senza conservazione permanente da parte di OpenAI, in conformità al loro{" "}
                 <a
                   href="https://openai.com/enterprise-privacy"
                   target="_blank"
@@ -280,7 +280,7 @@ export default function PrivacyPage() {
               </li>
             </ul>
             <p className="mt-3">
-              I dati non vengono mai venduti, ceduti o condivisi per finalita di marketing di terze parti.
+              I dati non vengono mai venduti, ceduti o condivisi per finalità di marketing di terze parti.
             </p>
           </section>
 
@@ -297,18 +297,18 @@ export default function PrivacyPage() {
               <li><strong>Rettifica:</strong> richiedere la correzione di dati inesatti o incompleti.</li>
               <li><strong>Cancellazione:</strong> richiedere la cancellazione dei propri dati (&ldquo;diritto all&apos;oblio&rdquo;), nei limiti previsti dalla legge.</li>
               <li><strong>Limitazione:</strong> richiedere la limitazione del trattamento in determinate circostanze.</li>
-              <li><strong>Portabilita:</strong> ricevere i propri dati in formato strutturato, di uso comune e leggibile da dispositivo automatico.</li>
+              <li><strong>Portabilità:</strong> ricevere i propri dati in formato strutturato, di uso comune e leggibile da dispositivo automatico.</li>
               <li><strong>Opposizione:</strong> opporsi al trattamento dei propri dati per motivi legittimi.</li>
-              <li><strong>Revoca del consenso:</strong> revocare il consenso in qualsiasi momento, senza pregiudicare la liceita del trattamento basato sul consenso prima della revoca.</li>
+              <li><strong>Revoca del consenso:</strong> revocare il consenso in qualsiasi momento, senza pregiudicare la liceità del trattamento basato sul consenso prima della revoca.</li>
             </ul>
             <p className="mt-3">
-              Per esercitare i propri diritti, l&apos;interessato puo inviare una richiesta a{" "}
+              Per esercitare i propri diritti, l&apos;interessato può inviare una richiesta a{" "}
               <a href="mailto:info@vibecanyon.com" className="font-medium underline" style={{ color: "var(--color-primary)" }}>
                 info@vibecanyon.com
               </a>. Il Titolare rispondera entro 30 giorni dal ricevimento della richiesta.
             </p>
             <p className="mt-3">
-              L&apos;interessato ha inoltre il diritto di proporre reclamo all&apos;autorita di controllo competente
+              L&apos;interessato ha inoltre il diritto di proporre reclamo all&apos;autorità di controllo competente
               (Garante per la Protezione dei Dati Personali —{" "}
               <a
                 href="https://www.garanteprivacy.it"
@@ -366,7 +366,7 @@ export default function PrivacyPage() {
             <p>
               Il Titolare si riserva il diritto di modificare la presente informativa in qualsiasi momento.
               Le modifiche saranno pubblicate su questa pagina con indicazione della data di ultimo aggiornamento.
-              In caso di modifiche sostanziali, l&apos;Utente sara informato tramite email.
+              In caso di modifiche sostanziali, l&apos;Utente sarà informato tramite email.
             </p>
           </section>
 
@@ -376,7 +376,7 @@ export default function PrivacyPage() {
               11. Contatti
             </h2>
             <p>
-              Per qualsiasi domanda relativa al trattamento dei dati personali, e possibile contattare
+              Per qualsiasi domanda relativa al trattamento dei dati personali, è possibile contattare
               il Titolare:
             </p>
             <p className="mt-3 font-medium" style={{ color: "var(--color-text-primary)" }}>

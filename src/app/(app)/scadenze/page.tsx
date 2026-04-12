@@ -174,7 +174,7 @@ function CompleteModal({
             {deadline.employeeName ? ` di ${deadline.employeeName}` : ""}.
             {deadline.periodicityMonths > 0 && (
               <span className="block mt-1" style={{ color: "var(--color-primary)" }}>
-                Verra creato automaticamente il prossimo rinnovo tra{" "}
+                Verrà creato automaticamente il prossimo rinnovo tra{" "}
                 {deadline.periodicityMonths} mesi.
               </span>
             )}

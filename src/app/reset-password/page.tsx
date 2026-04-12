@@ -19,7 +19,7 @@ export default function ResetPasswordPage() {
     setError("");
 
     if (!email.trim()) {
-      setError("L'indirizzo email e obbligatorio");
+      setError("L'indirizzo email è obbligatorio");
       return;
     }
 
@@ -144,10 +144,10 @@ export default function ResetPasswordPage() {
                     className="text-xl font-bold tracking-tight mb-3"
                     style={{ color: "var(--color-text-primary)" }}
                   >
-                    Funzionalita in arrivo
+                    Funzionalità in arrivo
                   </h2>
                   <p className="text-sm leading-relaxed mb-6" style={{ color: "var(--color-text-secondary)" }}>
-                    Il recupero automatico della password sara disponibile a breve.
+                    Il recupero automatico della password sarà disponibile a breve.
                     Nel frattempo, contatta il nostro supporto per assistenza:
                   </p>
                   <a

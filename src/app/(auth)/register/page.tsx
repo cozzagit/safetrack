@@ -333,7 +333,7 @@ export default function RegisterPage() {
 
       {/* Footer */}
       <p className="text-center text-sm mt-6" style={{ color: "var(--color-text-muted)" }}>
-        Hai gia un account?{" "}
+        Hai già un account?{" "}
         <Link href="/login" className="font-medium" style={{ color: "var(--color-primary)" }}>
           Accedi
         </Link>

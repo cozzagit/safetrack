@@ -594,7 +594,7 @@ async function seed() {
       appliesToRoles: null,
       riskLevels: ['alto'],
       durationHours: null,
-      sanctionInfo: 'Sospensione attivita di cantiere — sanzione amministrativa da €6.000 a €12.000',
+      sanctionInfo: 'Sospensione attività di cantiere — sanzione amministrativa da €6.000 a €12.000',
       isSystem: true,
       sortOrder: 350,
     },

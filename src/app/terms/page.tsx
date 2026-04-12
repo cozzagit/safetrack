@@ -61,13 +61,13 @@ export default function TermsPage() {
               1. Oggetto del servizio
             </h2>
             <p>
-              SafeTrack (di seguito &ldquo;il Servizio&rdquo; o &ldquo;la Piattaforma&rdquo;) e una piattaforma SaaS (Software as a Service)
+              SafeTrack (di seguito &ldquo;il Servizio&rdquo; o &ldquo;la Piattaforma&rdquo;) è una piattaforma SaaS (Software as a Service)
               progettata per supportare i consulenti RSPP e i professionisti della sicurezza sul lavoro nella gestione
               delle scadenze normative, degli attestati formativi, delle visite mediche e degli adempimenti previsti dal
               D.Lgs. 81/2008 e successive modifiche e integrazioni.
             </p>
             <p className="mt-3">
-              Il Servizio e fornito da VibeCanyon (di seguito &ldquo;il Fornitore&rdquo;), con sede operativa in Italia.
+              Il Servizio è fornito da VibeCanyon (di seguito &ldquo;il Fornitore&rdquo;), con sede operativa in Italia.
             </p>
           </section>
 
@@ -77,9 +77,9 @@ export default function TermsPage() {
               2. Registrazione e account
             </h2>
             <p>
-              Per utilizzare SafeTrack e necessario creare un account fornendo informazioni accurate e complete.
-              L&apos;Utente e responsabile della riservatezza delle proprie credenziali di accesso e di tutte le
-              attivita svolte tramite il proprio account.
+              Per utilizzare SafeTrack è necessario creare un account fornendo informazioni accurate e complete.
+              L&apos;Utente è responsabile della riservatezza delle proprie credenziali di accesso e di tutte le
+              attività svolte tramite il proprio account.
             </p>
             <p className="mt-3">
               L&apos;Utente si impegna a notificare immediatamente il Fornitore in caso di utilizzo non autorizzato
@@ -97,19 +97,19 @@ export default function TermsPage() {
               3. Piani di abbonamento e pagamenti
             </h2>
             <p>
-              SafeTrack offre diversi piani di abbonamento, incluso un piano gratuito con funzionalita limitate.
-              I piani a pagamento prevedono un canone mensile il cui importo e specificato nella pagina prezzi
+              SafeTrack offre diversi piani di abbonamento, incluso un piano gratuito con funzionalità limitate.
+              I piani a pagamento prevedono un canone mensile il cui importo è specificato nella pagina prezzi
               della Piattaforma.
             </p>
             <ul className="list-disc pl-5 mt-3 space-y-2">
               <li>
                 <strong>Periodo di prova:</strong> Tutti i piani a pagamento includono un periodo di prova
-                gratuita di 30 giorni. Al termine del periodo di prova, l&apos;Utente sara invitato a inserire
-                un metodo di pagamento per continuare ad utilizzare le funzionalita del piano scelto.
+                gratuita di 30 giorni. Al termine del periodo di prova, l&apos;Utente sarà invitato a inserire
+                un metodo di pagamento per continuare ad utilizzare le funzionalità del piano scelto.
               </li>
               <li>
                 <strong>Fatturazione:</strong> Gli abbonamenti sono fatturati mensilmente in anticipo. L&apos;importo
-                sara addebitato sul metodo di pagamento indicato dall&apos;Utente alla data di rinnovo.
+                sarà addebitato sul metodo di pagamento indicato dall&apos;Utente alla data di rinnovo.
               </li>
               <li>
                 <strong>Rimborsi:</strong> Non sono previsti rimborsi per periodi di abbonamento parzialmente
@@ -129,7 +129,7 @@ export default function TermsPage() {
             </h2>
             <p>L&apos;Utente si impegna a:</p>
             <ul className="list-disc pl-5 mt-3 space-y-2">
-              <li>Utilizzare il Servizio esclusivamente per le finalita previste e nel rispetto della normativa vigente.</li>
+              <li>Utilizzare il Servizio esclusivamente per le finalità previste e nel rispetto della normativa vigente.</li>
               <li>Inserire dati veritieri, accurati e aggiornati.</li>
               <li>Non condividere le proprie credenziali di accesso con soggetti terzi non autorizzati.</li>
               <li>Non utilizzare il Servizio per scopi illeciti, fraudolenti o in violazione di diritti di terzi.</li>
@@ -144,11 +144,11 @@ export default function TermsPage() {
               5. Proprieta intellettuale
             </h2>
             <p>
-              Tutti i diritti di proprieta intellettuale relativi alla Piattaforma, inclusi software, design,
-              loghi, testi e documentazione, sono e restano di proprieta esclusiva del Fornitore.
+              Tutti i diritti di proprietà intellettuale relativi alla Piattaforma, inclusi software, design,
+              loghi, testi e documentazione, sono e restano di proprietà esclusiva del Fornitore.
             </p>
             <p className="mt-3">
-              L&apos;Utente conserva la proprieta dei dati inseriti nella Piattaforma. Con l&apos;utilizzo del
+              L&apos;Utente conserva la proprietà dei dati inseriti nella Piattaforma. Con l&apos;utilizzo del
               Servizio, l&apos;Utente concede al Fornitore una licenza limitata per trattare tali dati al solo
               fine di erogare il Servizio.
             </p>
@@ -157,7 +157,7 @@ export default function TermsPage() {
           {/* 6 */}
           <section>
             <h2 className="text-lg font-bold mb-3" style={{ color: "var(--color-text-primary)" }}>
-              6. Limitazioni di responsabilita
+              6. Limitazioni di responsabilità
             </h2>
             <div
               className="p-4 rounded-lg mb-4"
@@ -170,14 +170,14 @@ export default function TermsPage() {
                 Avvertenza importante
               </p>
               <p style={{ color: "var(--color-text-primary)" }}>
-                SafeTrack e uno <strong>strumento di supporto organizzativo</strong> e NON sostituisce in alcun
-                modo la competenza professionale, il giudizio tecnico e la responsabilita del Responsabile del
+                SafeTrack è uno <strong>strumento di supporto organizzativo</strong> e NON sostituisce in alcun
+                modo la competenza professionale, il giudizio tecnico e la responsabilità del Responsabile del
                 Servizio di Prevenzione e Protezione (RSPP) o di qualsiasi altro professionista della sicurezza
                 sul lavoro. L&apos;Utente resta l&apos;unico responsabile della verifica della correttezza e
                 completezza degli adempimenti normativi.
               </p>
             </div>
-            <p>Il Fornitore non sara responsabile per:</p>
+            <p>Il Fornitore non sarà responsabile per:</p>
             <ul className="list-disc pl-5 mt-3 space-y-2">
               <li>Danni diretti o indiretti derivanti dall&apos;utilizzo o dall&apos;impossibilita di utilizzare il Servizio.</li>
               <li>Eventuali errori, omissioni o inesattezze nelle informazioni normative preconfigurate nella Piattaforma.</li>
@@ -186,9 +186,9 @@ export default function TermsPage() {
               <li>Interruzioni temporanee del Servizio per manutenzione programmata o straordinaria.</li>
             </ul>
             <p className="mt-3">
-              In ogni caso, la responsabilita complessiva del Fornitore nei confronti dell&apos;Utente non potra
+              In ogni caso, la responsabilità complessiva del Fornitore nei confronti dell&apos;Utente non potrà
               eccedere l&apos;importo complessivo corrisposto dall&apos;Utente nei 12 mesi precedenti l&apos;evento
-              che ha dato origine alla responsabilita.
+              che ha dato origine alla responsabilità.
             </p>
           </section>
 
@@ -198,14 +198,14 @@ export default function TermsPage() {
               7. Trattamento dei dati personali
             </h2>
             <p>
-              Il trattamento dei dati personali da parte del Fornitore e disciplinato dalla{" "}
+              Il trattamento dei dati personali da parte del Fornitore è disciplinato dalla{" "}
               <Link href="/privacy" className="font-medium underline" style={{ color: "var(--color-primary)" }}>
                 Privacy Policy
               </Link>
               , che costituisce parte integrante dei presenti Termini di Servizio.
             </p>
             <p className="mt-3">
-              L&apos;Utente, in qualita di Titolare del trattamento dei dati dei propri dipendenti e clienti
+              L&apos;Utente, in qualità di Titolare del trattamento dei dati dei propri dipendenti e clienti
               inseriti nella Piattaforma, nomina il Fornitore quale Responsabile del trattamento ai sensi
               dell&apos;art. 28 del Regolamento (UE) 2016/679 (GDPR).
             </p>
@@ -214,10 +214,10 @@ export default function TermsPage() {
           {/* 8 */}
           <section>
             <h2 className="text-lg font-bold mb-3" style={{ color: "var(--color-text-primary)" }}>
-              8. Livelli di servizio e disponibilita
+              8. Livelli di servizio e disponibilità
             </h2>
             <p>
-              Il Fornitore si impegna a garantire una disponibilita del Servizio pari ad almeno il 99,5% su base
+              Il Fornitore si impegna a garantire una disponibilità del Servizio pari ad almeno il 99,5% su base
               mensile, esclusi i periodi di manutenzione programmata. Le manutenzioni programmate saranno
               comunicate con un preavviso di almeno 24 ore tramite email o notifica in-app.
             </p>
@@ -234,7 +234,7 @@ export default function TermsPage() {
             </p>
             <ul className="list-disc pl-5 mt-3 space-y-2">
               <li>
-                <strong>Recesso dell&apos;Utente:</strong> L&apos;Utente puo recedere dal contratto in qualsiasi
+                <strong>Recesso dell&apos;Utente:</strong> L&apos;Utente può recedere dal contratto in qualsiasi
                 momento dalle impostazioni del proprio account. Il recesso avra effetto al termine del periodo
                 di fatturazione in corso.
               </li>
@@ -274,7 +274,7 @@ export default function TermsPage() {
             </h2>
             <p>
               I presenti Termini di Servizio sono regolati dalla legge italiana. Per qualsiasi controversia
-              derivante dall&apos;interpretazione o dall&apos;esecuzione dei presenti Termini, sara competente
+              derivante dall&apos;interpretazione o dall&apos;esecuzione dei presenti Termini, sarà competente
               in via esclusiva il Foro di Como (Italia), fatte salve le disposizioni inderogabili a tutela
               del consumatore ove applicabili.
             </p>
@@ -286,7 +286,7 @@ export default function TermsPage() {
               12. Contatti
             </h2>
             <p>
-              Per qualsiasi domanda relativa ai presenti Termini di Servizio, e possibile contattare il
+              Per qualsiasi domanda relativa ai presenti Termini di Servizio, è possibile contattare il
               Fornitore all&apos;indirizzo:
             </p>
             <p className="mt-3 font-medium" style={{ color: "var(--color-text-primary)" }}>

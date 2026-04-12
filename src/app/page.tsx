@@ -49,7 +49,7 @@ const PAIN_POINTS = [
   },
   {
     emoji: "📞",
-    text: "Il titolare ti chiama: \"L'ASL e qui, siamo in regola?\" E tu devi cercare tutto?",
+    text: "Il titolare ti chiama: \"L'ASL è qui, siamo in regola?\" E tu devi cercare tutto?",
   },
   {
     emoji: "📋",
@@ -124,7 +124,7 @@ const FEATURES = [
   {
     Icon: Bell,
     title: "Notifiche intelligenti",
-    description: "60, 30, 14, 7 giorni prima della scadenza. Email + notifiche push. Non dimentichi piu nulla.",
+    description: "60, 30, 14, 7 giorni prima della scadenza. Email + notifiche push. Non dimentichi più nulla.",
     colorVar: "--color-primary",
     bgVar: "--color-primary-50",
   },
@@ -195,7 +195,7 @@ const PRICING_PLANS = [
     name: "Studio",
     price: "€149",
     period: "/mese",
-    description: "Per studi con piu consulenti",
+    description: "Per studi con più consulenti",
     values: ["Illimitate", "Illimitati", "Illimitate", true, true, true, "Completo + batch", true, "Dedicato"],
     cta: "Prova 30 giorni gratis",
     ctaHref: "/register?plan=studio",
@@ -206,15 +206,15 @@ const PRICING_PLANS = [
 const FAQ_ITEMS = [
   {
     q: "Posso importare i dati dal mio Excel attuale?",
-    a: "Si, SafeTrack supporta l'importazione da file Excel (.xlsx). Carica il file, l'AI mappa automaticamente le colonne ai campi corretti, e puoi importare aziende e dipendenti in pochi minuti. Supportiamo qualsiasi formato — non devi ristrutturare il tuo foglio.",
+    a: "Sì, SafeTrack supporta l'importazione da file Excel (.xlsx). Carica il file, l'AI mappa automaticamente le colonne ai campi corretti, e puoi importare aziende e dipendenti in pochi minuti. Supportiamo qualsiasi formato — non devi ristrutturare il tuo foglio.",
   },
   {
     q: "I dati sono al sicuro?",
-    a: "Assolutamente si. I dati sono crittografati in transito (TLS) e a riposo. I server sono situati nell'Unione Europea. SafeTrack e conforme al GDPR e tratta i dati sanitari (visite mediche) secondo le basi giuridiche previste dal D.Lgs. 81/08. Non vendiamo ne condividiamo mai i tuoi dati con terze parti per finalita di marketing.",
+    a: "Assolutamente si. I dati sono crittografati in transito (TLS) e a riposo. I server sono situati nell'Unione Europea. SafeTrack è conforme al GDPR e tratta i dati sanitari (visite mediche) secondo le basi giuridiche previste dal D.Lgs. 81/08. Non vendiamo né condividiamo mai i tuoi dati con terze parti per finalità di marketing.",
   },
   {
     q: "Posso usarlo dal telefono?",
-    a: "Si, SafeTrack e una Progressive Web App (PWA) ottimizzata per dispositivi mobili. Puoi installarla sulla schermata home del tuo smartphone e usarla come un'app nativa, con notifiche push incluse. Funziona anche offline per la consultazione dei dati.",
+    a: "Sì, SafeTrack è una Progressive Web App (PWA) ottimizzata per dispositivi mobili. Puoi installarla sulla schermata home del tuo smartphone e usarla come un'app nativa, con notifiche push incluse. Funziona anche offline per la consultazione dei dati.",
   },
   {
     q: "Cosa succede alla fine della prova gratuita?",
@@ -222,7 +222,7 @@ const FAQ_ITEMS = [
   },
   {
     q: "SafeTrack sostituisce il mio lavoro di RSPP?",
-    a: "No. SafeTrack e uno strumento di supporto organizzativo che ti aiuta a gestire scadenze e documentazione in modo efficiente. La competenza professionale, il giudizio tecnico e la responsabilita restano interamente del consulente RSPP. SafeTrack ti fa risparmiare tempo, non sostituisce la tua professionalita.",
+    a: "No. SafeTrack è uno strumento di supporto organizzativo che ti aiuta a gestire scadenze e documentazione in modo efficiente. La competenza professionale, il giudizio tecnico e la responsabilità restano interamente del consulente RSPP. SafeTrack ti fa risparmiare tempo, non sostituisce la tua professionalità.",
   },
   {
     q: "Come funziona la scansione AI degli attestati?",
@@ -301,7 +301,7 @@ export default function LandingPage() {
 
           {/* Nav links — desktop */}
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>
-            <a href="#funzionalita" className="hover:text-[var(--color-primary)] transition-colors">Funzionalita</a>
+            <a href="#funzionalita" className="hover:text-[var(--color-primary)] transition-colors">Funzionalità</a>
             <a href="#come-funziona" className="hover:text-[var(--color-primary)] transition-colors">Come funziona</a>
             <a href="#prezzi" className="hover:text-[var(--color-primary)] transition-colors">Prezzi</a>
             <a href="#faq" className="hover:text-[var(--color-primary)] transition-colors">FAQ</a>
@@ -334,7 +334,7 @@ export default function LandingPage() {
             className="md:hidden px-4 pb-4 space-y-2"
             style={{ backgroundColor: "var(--color-surface)", borderTop: "1px solid var(--color-border)" }}
           >
-            <a href="#funzionalita" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>Funzionalita</a>
+            <a href="#funzionalita" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>Funzionalità</a>
             <a href="#come-funziona" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>Come funziona</a>
             <a href="#prezzi" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>Prezzi</a>
             <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-sm font-medium" style={{ color: "var(--color-text-secondary)" }}>FAQ</a>
@@ -401,7 +401,7 @@ export default function LandingPage() {
                 className="mt-6 text-base md:text-xl leading-relaxed max-w-2xl"
                 style={{ color: "rgba(255,255,255,0.78)" }}
               >
-                SafeTrack e la piattaforma che ogni RSPP desidera. Gestisci scadenze, dipendenti e
+                SafeTrack è la piattaforma che ogni RSPP desidera. Gestisci scadenze, dipendenti e
                 documentazione per tutti i tuoi clienti in un unico posto intelligente.
               </motion.p>
 
@@ -513,7 +513,7 @@ export default function LandingPage() {
                 className="text-sm font-semibold uppercase tracking-widest mb-3"
                 style={{ color: "var(--color-accent)" }}
               >
-                Funzionalita
+                Funzionalità
               </motion.p>
               <motion.h2
                 variants={fadeUp}
@@ -527,7 +527,7 @@ export default function LandingPage() {
                 className="mt-4 text-base max-w-2xl mx-auto"
                 style={{ color: "var(--color-text-secondary)" }}
               >
-                Ogni funzionalita risolve un problema reale del tuo lavoro quotidiano.
+                Ogni funzionalità risolve un problema reale del tuo lavoro quotidiano.
               </motion.p>
             </motion.div>
 
@@ -598,7 +598,7 @@ export default function LandingPage() {
                 className="text-base md:text-lg max-w-2xl mx-auto"
                 style={{ color: "var(--color-text-secondary)" }}
               >
-                Ogni schermata e progettata per darti le informazioni giuste al momento giusto. Zero confusione, massima efficienza.
+                Ogni schermata è progettata per darti le informazioni giuste al momento giusto. Zero confusione, massima efficienza.
               </motion.p>
             </motion.div>
 
@@ -622,7 +622,7 @@ export default function LandingPage() {
                     Tutto sotto controllo in un colpo d&apos;occhio
                   </h3>
                   <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--color-text-secondary)" }}>
-                    Scadenze urgenti, aziende critiche, tasso di conformita e piano del mese. Apri l&apos;app e sai gia cosa fare.
+                    Scadenze urgenti, aziende critiche, tasso di conformità e piano del mese. Apri l&apos;app e sai già cosa fare.
                   </p>
                   <ul className="space-y-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>
                     {["Scadenze urgenti in evidenza", "Indice di salute per ogni azienda", "Piano mensile automatico"].map(t => (
@@ -648,7 +648,7 @@ export default function LandingPage() {
                         { label: "Urgenti", value: "3", color: "#dc2626", bg: "#fef2f2" },
                         { label: "In scadenza", value: "8", color: "#d97706", bg: "#fffbeb" },
                         { label: "Aziende", value: "12", color: "#1e3a5f", bg: "#eff6ff" },
-                        { label: "Conformita", value: "87%", color: "#059669", bg: "#ecfdf5" },
+                        { label: "Conformità", value: "87%", color: "#059669", bg: "#ecfdf5" },
                       ].map(s => (
                         <div key={s.label} className="rounded-lg p-2 text-center" style={{ backgroundColor: s.bg }}>
                           <div className="text-lg font-extrabold" style={{ color: s.color }}>{s.value}</div>
@@ -730,7 +730,7 @@ export default function LandingPage() {
                     Filtra, completa, rinnova. In un tocco.
                   </h3>
                   <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--color-text-secondary)" }}>
-                    Ogni scadenza e colorata per urgenza. Completa con un click e il sistema genera automaticamente il prossimo rinnovo.
+                    Ogni scadenza è colorata per urgenza. Completa con un click e il sistema genera automaticamente il prossimo rinnovo.
                   </p>
                   <ul className="space-y-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>
                     {["Filtri per stato, azienda, categoria", "Completamento con rinnovo automatico", "Vista calendario mensile"].map(t => (
@@ -757,10 +757,10 @@ export default function LandingPage() {
                     <ShieldCheck className="w-3.5 h-3.5" /> Kit Ispezione ASL
                   </div>
                   <h3 className="text-xl md:text-2xl font-bold mb-3" style={{ color: "var(--color-text-primary)" }}>
-                    L&apos;ispettore e alla porta? Nessun panico.
+                    L&apos;ispettore è alla porta? Nessun panico.
                   </h3>
                   <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--color-text-secondary)" }}>
-                    Un tocco genera il fascicolo completo: matrice formazione, documenti aziendali, stato conformita. Condividilo via WhatsApp in 10 secondi.
+                    Un tocco genera il fascicolo completo: matrice formazione, documenti aziendali, stato conformità. Condividilo via WhatsApp in 10 secondi.
                   </p>
                   <ul className="space-y-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>
                     {["Fascicolo PDF professionale istantaneo", "Matrice formazione dipendenti completa", "Link condivisibile (valido 24h)"].map(t => (
@@ -781,13 +781,13 @@ export default function LandingPage() {
                   </div>
                   <div className="p-4" style={{ backgroundColor: "#f8fafc" }}>
                     <div className="text-center mb-3">
-                      <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#1e3a5f" }}>Fascicolo Conformita Sicurezza</div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#1e3a5f" }}>Fascicolo Conformità Sicurezza</div>
                       <div className="text-[9px]" style={{ color: "#94a3b8" }}>Edilizia Rossi Srl — ATECO F43.21.01</div>
                     </div>
                     <div className="flex items-center justify-center gap-4 mb-3 py-2 rounded-lg" style={{ backgroundColor: "#ecfdf5" }}>
                       <div className="text-center">
                         <div className="text-lg font-extrabold" style={{ color: "#059669" }}>87%</div>
-                        <div className="text-[8px]" style={{ color: "#059669" }}>Conformita</div>
+                        <div className="text-[8px]" style={{ color: "#059669" }}>Conformità</div>
                       </div>
                       <div className="w-px h-8" style={{ backgroundColor: "#d1fae5" }} />
                       <div className="text-center">
@@ -988,7 +988,7 @@ export default function LandingPage() {
                         className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white whitespace-nowrap"
                         style={{ backgroundColor: "var(--color-accent)" }}
                       >
-                        Piu popolare
+                        Più popolare
                       </span>
                     )}
 
@@ -1051,7 +1051,7 @@ export default function LandingPage() {
                               className="text-sm"
                               style={{ color: highlighted ? "rgba(255,255,255,0.85)" : "var(--color-text-secondary)" }}
                             >
-                              {feature}: <strong>{isBoolean ? "Si" : value}</strong>
+                              {feature}: <strong>{isBoolean ? "Sì" : value}</strong>
                             </span>
                           </li>
                         );
@@ -1203,7 +1203,7 @@ export default function LandingPage() {
             <div>
               <h4 className="text-sm font-semibold text-white mb-4">Prodotto</h4>
               <ul className="space-y-2.5 text-sm">
-                <li><a href="#funzionalita" className="hover:text-white transition-colors">Funzionalita</a></li>
+                <li><a href="#funzionalita" className="hover:text-white transition-colors">Funzionalità</a></li>
                 <li><a href="#prezzi" className="hover:text-white transition-colors">Prezzi</a></li>
                 <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
                 <li><Link href="/register" className="hover:text-white transition-colors">Prova gratis</Link></li>

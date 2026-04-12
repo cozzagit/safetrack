@@ -409,7 +409,7 @@ export default function DashboardPage() {
           href="/aziende"
         />
         <StatCard
-          label="Tasso Conformita"
+          label="Tasso Conformità"
           value={stats.complianceRate}
           sub="scadenze in regola"
           Icon={ShieldCheck}
@@ -547,7 +547,7 @@ export default function DashboardPage() {
                 className="font-semibold text-base"
                 style={{ color: "var(--color-text-primary)" }}
               >
-                Opportunita Formative
+                Opportunità Formative
               </h2>
             </div>
 
@@ -561,7 +561,7 @@ export default function DashboardPage() {
                   className="text-sm"
                   style={{ color: "var(--color-text-muted)" }}
                 >
-                  Nessuna opportunita di formazione raggruppata
+                  Nessuna opportunità di formazione raggruppata
                 </p>
               </div>
             ) : (
@@ -836,7 +836,7 @@ export default function DashboardPage() {
                   className="text-sm font-semibold"
                   style={{ color: "var(--color-text-primary)" }}
                 >
-                  Conformita Media
+                  Conformità Media
                 </p>
                 <p
                   className="text-xs mt-0.5"

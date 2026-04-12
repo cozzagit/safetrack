@@ -54,7 +54,7 @@ export async function POST(
   if (deadline.userId !== user.id) return forbiddenResponse();
   if (deadline.status === 'completed') {
     return Response.json(
-      { error: { message: 'Scadenza gia completata' } },
+      { error: { message: 'Scadenza già completata' } },
       { status: 409 }
     );
   }

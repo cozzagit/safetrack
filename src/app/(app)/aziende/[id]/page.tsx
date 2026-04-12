@@ -773,7 +773,7 @@ function AllineaStoricoModal({
           >
             <AlertTriangle className="w-4 h-4 flex-shrink-0" />
             <span>
-              <strong>{overdueCount}</strong> scadenz{overdueCount === 1 ? "a scaduta verra elaborata" : "e scadute verranno elaborate"}.
+              <strong>{overdueCount}</strong> scadenz{overdueCount === 1 ? "a scaduta verrà elaborata" : "e scadute verranno elaborate"}.
             </span>
           </div>
         )}

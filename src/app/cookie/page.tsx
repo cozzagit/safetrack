@@ -63,7 +63,7 @@ export default function CookiePolicyPage() {
             <p>
               I cookie sono piccoli file di testo che vengono memorizzati sul dispositivo dell&apos;Utente
               quando visita un sito web. Vengono utilizzati per garantire il funzionamento del sito, migliorare
-              l&apos;esperienza di navigazione e, in alcuni casi, per finalita di analisi e marketing.
+              l&apos;esperienza di navigazione e, in alcuni casi, per finalità di analisi e marketing.
             </p>
           </section>
 
@@ -75,7 +75,7 @@ export default function CookiePolicyPage() {
             <p>
               SafeTrack utilizza <strong>esclusivamente cookie tecnici essenziali</strong>, necessari per il
               corretto funzionamento della Piattaforma. Non vengono utilizzati cookie di profilazione, di
-              marketing o di terze parti per finalita pubblicitarie.
+              marketing o di terze parti per finalità pubblicitarie.
             </p>
 
             <div className="overflow-x-auto mt-4">
@@ -84,7 +84,7 @@ export default function CookiePolicyPage() {
                   <tr style={{ borderBottom: "2px solid var(--color-border)" }}>
                     <th className="text-left py-3 pr-4 font-semibold" style={{ color: "var(--color-text-primary)" }}>Nome</th>
                     <th className="text-left py-3 pr-4 font-semibold" style={{ color: "var(--color-text-primary)" }}>Tipo</th>
-                    <th className="text-left py-3 pr-4 font-semibold" style={{ color: "var(--color-text-primary)" }}>Finalita</th>
+                    <th className="text-left py-3 pr-4 font-semibold" style={{ color: "var(--color-text-primary)" }}>Finalità</th>
                     <th className="text-left py-3 font-semibold" style={{ color: "var(--color-text-primary)" }}>Durata</th>
                   </tr>
                 </thead>
@@ -113,7 +113,7 @@ export default function CookiePolicyPage() {
             </h2>
             <p>
               I cookie tecnici essenziali sono strettamente necessari per il funzionamento della Piattaforma e
-              non possono essere disabilitati. Senza questi cookie, funzionalita fondamentali come
+              non possono essere disabilitati. Senza questi cookie, funzionalità fondamentali come
               l&apos;autenticazione e la navigazione tra le pagine protette non sarebbero disponibili.
             </p>
             <p className="mt-3">
@@ -128,7 +128,7 @@ export default function CookiePolicyPage() {
               4. Cookie di terze parti
             </h2>
             <p>
-              SafeTrack <strong>non utilizza cookie di terze parti</strong> per finalita di profilazione,
+              SafeTrack <strong>non utilizza cookie di terze parti</strong> per finalità di profilazione,
               marketing o retargeting. Non vengono integrati servizi di analytics esterni (Google Analytics,
               Facebook Pixel, ecc.) che installano cookie sul dispositivo dell&apos;Utente.
             </p>
@@ -140,7 +140,7 @@ export default function CookiePolicyPage() {
               5. Come gestire i cookie
             </h2>
             <p>
-              L&apos;Utente puo gestire le preferenze relative ai cookie attraverso le impostazioni del proprio
+              L&apos;Utente può gestire le preferenze relative ai cookie attraverso le impostazioni del proprio
               browser. Si noti che la disabilitazione dei cookie tecnici essenziali potrebbe compromettere il
               funzionamento della Piattaforma.
             </p>
@@ -175,7 +175,7 @@ export default function CookiePolicyPage() {
               6. Aggiornamenti alla Cookie Policy
             </h2>
             <p>
-              La presente Cookie Policy puo essere aggiornata periodicamente. Le modifiche saranno pubblicate
+              La presente Cookie Policy può essere aggiornata periodicamente. Le modifiche saranno pubblicate
               su questa pagina con indicazione della data di ultimo aggiornamento.
             </p>
           </section>

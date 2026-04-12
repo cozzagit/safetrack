@@ -451,7 +451,7 @@ export default function ReportPage() {
               className="text-sm"
               style={{ color: "var(--color-text-muted)" }}
             >
-              Report di conformita aziendale
+              Report di conformità aziendale
             </p>
           </div>
         </div>
@@ -468,7 +468,7 @@ export default function ReportPage() {
             <button
               className="btn-secondary"
               disabled
-              title="Funzionalita in arrivo"
+              title="Funzionalità in arrivo"
             >
               <Mail className="w-4 h-4" />
               <span className="hidden sm:inline">Invia al cliente</span>
@@ -510,7 +510,7 @@ export default function ReportPage() {
             className="text-sm"
             style={{ color: "var(--color-text-muted)" }}
           >
-            Scegli un&apos;azienda dal menu per visualizzare il report di conformita.
+            Scegli un&apos;azienda dal menu per visualizzare il report di conformità.
           </p>
         </div>
       )}
@@ -557,7 +557,7 @@ export default function ReportPage() {
               className="text-xl font-bold"
               style={{ color: "var(--color-text-primary)" }}
             >
-              Report di Conformita — {report.company.name}
+              Report di Conformità — {report.company.name}
             </h2>
             <p className="text-sm" style={{ color: "var(--color-text-muted)" }}>
               Generato il{" "}
@@ -640,7 +640,7 @@ export default function ReportPage() {
             />
             <StatCard
               value={`${report.summary.complianceRate}%`}
-              label="Tasso Conformita"
+              label="Tasso Conformità"
               Icon={ShieldCheck}
               colorVar={getComplianceColor(report.summary.complianceRate).color}
               bgVar={getComplianceColor(report.summary.complianceRate).bg}
@@ -661,7 +661,7 @@ export default function ReportPage() {
                 className="text-sm font-bold mb-4"
                 style={{ color: "var(--color-text-primary)" }}
               >
-                Conformita per Categoria
+                Conformità per Categoria
               </h3>
               <div className="space-y-4">
                 {categoryEntries.map(([name, stats]) => (
