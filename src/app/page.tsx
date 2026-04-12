@@ -569,6 +569,274 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* ── APP PREVIEW ─────────────────────────────────── */}
+        <section className="py-20 md:py-28 overflow-hidden" style={{ backgroundColor: "var(--color-background)" }}>
+          <div className="max-w-7xl mx-auto px-4 md:px-6">
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, margin: "-80px" }}
+              className="text-center mb-14"
+            >
+              <motion.p
+                variants={fadeUp}
+                className="text-sm font-semibold uppercase tracking-widest mb-3"
+                style={{ color: "var(--color-accent)" }}
+              >
+                Guarda come funziona
+              </motion.p>
+              <motion.h2
+                variants={fadeUp}
+                className="text-2xl md:text-4xl font-extrabold tracking-tight mb-4"
+                style={{ color: "var(--color-text-primary)" }}
+              >
+                Un&apos;interfaccia pensata per lavorare, non per imparare
+              </motion.h2>
+              <motion.p
+                variants={fadeUp}
+                className="text-base md:text-lg max-w-2xl mx-auto"
+                style={{ color: "var(--color-text-secondary)" }}
+              >
+                Ogni schermata e progettata per darti le informazioni giuste al momento giusto. Zero confusione, massima efficienza.
+              </motion.p>
+            </motion.div>
+
+            {/* Preview Cards */}
+            <div className="space-y-16 md:space-y-24">
+
+              {/* Preview 1: Dashboard */}
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.7 }}
+                className="grid md:grid-cols-2 gap-8 md:gap-12 items-center"
+              >
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4"
+                    style={{ backgroundColor: "var(--color-accent-50)", color: "var(--color-accent)" }}>
+                    <BarChart3 className="w-3.5 h-3.5" /> Dashboard
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-3" style={{ color: "var(--color-text-primary)" }}>
+                    Tutto sotto controllo in un colpo d&apos;occhio
+                  </h3>
+                  <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--color-text-secondary)" }}>
+                    Scadenze urgenti, aziende critiche, tasso di conformita e piano del mese. Apri l&apos;app e sai gia cosa fare.
+                  </p>
+                  <ul className="space-y-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>
+                    {["Scadenze urgenti in evidenza", "Indice di salute per ogni azienda", "Piano mensile automatico"].map(t => (
+                      <li key={t} className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: "var(--color-accent)" }} />
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                {/* Mockup Dashboard */}
+                <div className="rounded-xl overflow-hidden" style={{ boxShadow: "var(--shadow-xl)", border: "1px solid var(--color-border)" }}>
+                  <div className="flex items-center gap-1.5 px-4 py-2.5" style={{ backgroundColor: "var(--color-primary)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400/80" />
+                    <span className="text-[10px] text-white/50 ml-2 font-mono">safetrack.vibecanyon.com/dashboard</span>
+                  </div>
+                  <div className="p-4" style={{ backgroundColor: "#f8fafc" }}>
+                    <div className="text-xs font-semibold mb-3" style={{ color: "#1e293b" }}>Buongiorno, Marco 👋</div>
+                    <div className="grid grid-cols-4 gap-2 mb-4">
+                      {[
+                        { label: "Urgenti", value: "3", color: "#dc2626", bg: "#fef2f2" },
+                        { label: "In scadenza", value: "8", color: "#d97706", bg: "#fffbeb" },
+                        { label: "Aziende", value: "12", color: "#1e3a5f", bg: "#eff6ff" },
+                        { label: "Conformita", value: "87%", color: "#059669", bg: "#ecfdf5" },
+                      ].map(s => (
+                        <div key={s.label} className="rounded-lg p-2 text-center" style={{ backgroundColor: s.bg }}>
+                          <div className="text-lg font-extrabold" style={{ color: s.color }}>{s.value}</div>
+                          <div className="text-[9px]" style={{ color: s.color, opacity: 0.7 }}>{s.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="text-[10px] font-semibold mb-2" style={{ color: "#64748b" }}>Prossime scadenze</div>
+                    {[
+                      { name: "Formazione Preposti — G. Rossi", company: "Edilizia Rossi", days: "3 gg", color: "#dc2626" },
+                      { name: "Visita Medica — M. Bianchi", company: "Officina Bianchi", days: "12 gg", color: "#d97706" },
+                      { name: "Antincendio — L. Verdi", company: "Ristorante Verdi", days: "28 gg", color: "#059669" },
+                    ].map(d => (
+                      <div key={d.name} className="flex items-center justify-between py-1.5" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                        <div>
+                          <div className="text-[10px] font-medium" style={{ color: "#1e293b" }}>{d.name}</div>
+                          <div className="text-[9px]" style={{ color: "#94a3b8" }}>{d.company}</div>
+                        </div>
+                        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded" style={{ color: d.color, backgroundColor: d.color + "15" }}>{d.days}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Preview 2: Scadenze */}
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.7 }}
+                className="grid md:grid-cols-2 gap-8 md:gap-12 items-center"
+              >
+                {/* Mockup Scadenze — LEFT on desktop */}
+                <div className="rounded-xl overflow-hidden order-2 md:order-1" style={{ boxShadow: "var(--shadow-xl)", border: "1px solid var(--color-border)" }}>
+                  <div className="flex items-center gap-1.5 px-4 py-2.5" style={{ backgroundColor: "var(--color-primary)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400/80" />
+                    <span className="text-[10px] text-white/50 ml-2 font-mono">safetrack.vibecanyon.com/scadenze</span>
+                  </div>
+                  <div className="p-4" style={{ backgroundColor: "#f8fafc" }}>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="text-xs font-bold" style={{ color: "#1e293b" }}>Scadenze</div>
+                      <div className="flex gap-1 ml-auto">
+                        {["Tutte", "Scadute", "Urgenti", "Ok"].map((f, i) => (
+                          <span key={f} className="text-[8px] px-2 py-0.5 rounded-full font-medium"
+                            style={{
+                              backgroundColor: i === 0 ? "#1e3a5f" : "#f1f5f9",
+                              color: i === 0 ? "white" : "#64748b",
+                            }}>{f}</span>
+                        ))}
+                      </div>
+                    </div>
+                    {[
+                      { type: "Formazione Preposti", emp: "Giovanni Rossi", co: "Edilizia Rossi Srl", status: "Scaduta", sColor: "#dc2626", bar: "#dc2626" },
+                      { type: "Primo Soccorso Gruppo B", emp: "Maria Bianchi", co: "Officina Bianchi", status: "14 giorni", sColor: "#d97706", bar: "#d97706" },
+                      { type: "Visita Medica Periodica", emp: "Luca Verdi", co: "Ristorante Verdi", status: "In regola", sColor: "#059669", bar: "#059669" },
+                      { type: "Antincendio Rischio Alto", emp: "Anna Neri", co: "Edilizia Rossi Srl", status: "In regola", sColor: "#059669", bar: "#059669" },
+                    ].map(d => (
+                      <div key={d.type + d.emp} className="flex items-center gap-2 py-2" style={{ borderBottom: "1px solid #f1f5f9" }}>
+                        <div className="w-1 h-8 rounded-full flex-shrink-0" style={{ backgroundColor: d.bar }} />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[10px] font-semibold truncate" style={{ color: "#1e293b" }}>{d.type}</div>
+                          <div className="text-[9px]" style={{ color: "#94a3b8" }}>{d.emp} — {d.co}</div>
+                        </div>
+                        <span className="text-[8px] font-bold px-1.5 py-0.5 rounded flex-shrink-0" style={{ color: d.sColor, backgroundColor: d.sColor + "12" }}>{d.status}</span>
+                        <span className="text-[8px] px-2 py-1 rounded font-medium flex-shrink-0" style={{ backgroundColor: "#ecfdf5", color: "#059669" }}>Completata</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="order-1 md:order-2">
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4"
+                    style={{ backgroundColor: "var(--color-primary-50)", color: "var(--color-primary)" }}>
+                    <Calendar className="w-3.5 h-3.5" /> Scadenze
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-3" style={{ color: "var(--color-text-primary)" }}>
+                    Filtra, completa, rinnova. In un tocco.
+                  </h3>
+                  <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--color-text-secondary)" }}>
+                    Ogni scadenza e colorata per urgenza. Completa con un click e il sistema genera automaticamente il prossimo rinnovo.
+                  </p>
+                  <ul className="space-y-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>
+                    {["Filtri per stato, azienda, categoria", "Completamento con rinnovo automatico", "Vista calendario mensile"].map(t => (
+                      <li key={t} className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: "var(--color-accent)" }} />
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
+
+              {/* Preview 3: Kit Ispezione */}
+              <motion.div
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-60px" }}
+                transition={{ duration: 0.7 }}
+                className="grid md:grid-cols-2 gap-8 md:gap-12 items-center"
+              >
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4"
+                    style={{ backgroundColor: "#fef2f2", color: "#dc2626" }}>
+                    <ShieldCheck className="w-3.5 h-3.5" /> Kit Ispezione ASL
+                  </div>
+                  <h3 className="text-xl md:text-2xl font-bold mb-3" style={{ color: "var(--color-text-primary)" }}>
+                    L&apos;ispettore e alla porta? Nessun panico.
+                  </h3>
+                  <p className="text-sm leading-relaxed mb-4" style={{ color: "var(--color-text-secondary)" }}>
+                    Un tocco genera il fascicolo completo: matrice formazione, documenti aziendali, stato conformita. Condividilo via WhatsApp in 10 secondi.
+                  </p>
+                  <ul className="space-y-2 text-sm" style={{ color: "var(--color-text-secondary)" }}>
+                    {["Fascicolo PDF professionale istantaneo", "Matrice formazione dipendenti completa", "Link condivisibile (valido 24h)"].map(t => (
+                      <li key={t} className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 flex-shrink-0" style={{ color: "var(--color-accent)" }} />
+                        {t}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                {/* Mockup Kit Ispezione */}
+                <div className="rounded-xl overflow-hidden" style={{ boxShadow: "var(--shadow-xl)", border: "1px solid var(--color-border)" }}>
+                  <div className="flex items-center gap-1.5 px-4 py-2.5" style={{ backgroundColor: "var(--color-primary)", borderBottom: "1px solid rgba(255,255,255,0.1)" }}>
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/80" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-400/80" />
+                    <span className="text-[10px] text-white/50 ml-2 font-mono">Kit Ispezione ASL</span>
+                  </div>
+                  <div className="p-4" style={{ backgroundColor: "#f8fafc" }}>
+                    <div className="text-center mb-3">
+                      <div className="text-[10px] font-bold uppercase tracking-wider" style={{ color: "#1e3a5f" }}>Fascicolo Conformita Sicurezza</div>
+                      <div className="text-[9px]" style={{ color: "#94a3b8" }}>Edilizia Rossi Srl — ATECO F43.21.01</div>
+                    </div>
+                    <div className="flex items-center justify-center gap-4 mb-3 py-2 rounded-lg" style={{ backgroundColor: "#ecfdf5" }}>
+                      <div className="text-center">
+                        <div className="text-lg font-extrabold" style={{ color: "#059669" }}>87%</div>
+                        <div className="text-[8px]" style={{ color: "#059669" }}>Conformita</div>
+                      </div>
+                      <div className="w-px h-8" style={{ backgroundColor: "#d1fae5" }} />
+                      <div className="text-center">
+                        <div className="text-sm font-bold" style={{ color: "#1e293b" }}>12</div>
+                        <div className="text-[8px]" style={{ color: "#64748b" }}>Dipendenti</div>
+                      </div>
+                      <div className="w-px h-8" style={{ backgroundColor: "#d1fae5" }} />
+                      <div className="text-center">
+                        <div className="text-sm font-bold" style={{ color: "#dc2626" }}>2</div>
+                        <div className="text-[8px]" style={{ color: "#dc2626" }}>Scadute</div>
+                      </div>
+                    </div>
+                    <div className="text-[9px] font-bold mb-1.5" style={{ color: "#64748b" }}>Matrice Formazione</div>
+                    <table className="w-full text-[7px]" style={{ color: "#334155" }}>
+                      <thead>
+                        <tr style={{ backgroundColor: "#f1f5f9" }}>
+                          <th className="text-left p-1 font-semibold">Dipendente</th>
+                          <th className="p-1 font-semibold">Gen.</th>
+                          <th className="p-1 font-semibold">Spec.</th>
+                          <th className="p-1 font-semibold">Antinc.</th>
+                          <th className="p-1 font-semibold">P.S.</th>
+                          <th className="p-1 font-semibold">V.Med.</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[
+                          { name: "G. Rossi", vals: ["✓", "✓", "⚠", "✓", "✓"] },
+                          { name: "M. Bianchi", vals: ["✓", "✓", "✓", "✗", "✓"] },
+                          { name: "L. Verdi", vals: ["✓", "✓", "✓", "✓", "⚠"] },
+                        ].map(r => (
+                          <tr key={r.name} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                            <td className="p-1 font-medium">{r.name}</td>
+                            {r.vals.map((v, i) => (
+                              <td key={i} className="p-1 text-center font-bold" style={{
+                                color: v === "✓" ? "#059669" : v === "⚠" ? "#d97706" : "#dc2626"
+                              }}>{v}</td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </motion.div>
+
+            </div>
+          </div>
+        </section>
+
         {/* ── HOW IT WORKS ─────────────────────────────────── */}
         <section
           id="come-funziona"
