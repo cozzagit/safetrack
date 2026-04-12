@@ -960,7 +960,7 @@ export default function LandingPage() {
             </motion.div>
 
             {/* Mobile: scrollable pricing cards */}
-            <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 pb-4">
+            <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0 pt-5 pb-4">
               <motion.div
                 variants={staggerContainer}
                 initial="hidden"
@@ -973,7 +973,7 @@ export default function LandingPage() {
                   <motion.div
                     key={name}
                     variants={fadeUp}
-                    className={`relative rounded-xl p-6 flex flex-col ${highlighted ? "ring-2" : "card"}`}
+                    className={`relative rounded-xl flex flex-col overflow-visible ${highlighted ? "ring-2 pt-10 px-6 pb-6" : "card p-6"}`}
                     style={
                       highlighted
                         ? {
@@ -985,8 +985,8 @@ export default function LandingPage() {
                   >
                     {highlighted && (
                       <span
-                        className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold text-white whitespace-nowrap"
-                        style={{ backgroundColor: "var(--color-accent)" }}
+                        className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-5 py-1.5 rounded-full text-xs font-bold text-white whitespace-nowrap z-10"
+                        style={{ backgroundColor: "var(--color-accent)", boxShadow: "0 2px 8px rgba(5,150,105,0.3)" }}
                       >
                         Più popolare
                       </span>
